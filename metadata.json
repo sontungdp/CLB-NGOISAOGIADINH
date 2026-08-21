@@ -1,0 +1,6 @@
+{
+  "name": "Quản Lý Học Phí CLB Ngôi Sao Gia Định",
+  "description": "Hệ thống quản lý học viên, lớp học, điểm danh, thu học phí và báo cáo tài chính cho 2 chi nhánh CLB Ngôi Sao Gia Định.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

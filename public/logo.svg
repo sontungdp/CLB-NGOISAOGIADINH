@@ -1,0 +1,88 @@
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark Crimson Red Background -->
+  <rect width="500" height="500" rx="36" fill="#881519" />
+  <!-- Outer subtle rim -->
+  <rect x="6" y="6" width="488" height="488" rx="30" stroke="#FFDF00" stroke-width="3" stroke-opacity="0.4" fill="none" />
+  <!-- 5-Pointed Star Outline (Yellow #FEE101) -->
+  <path
+    d="M 250 24 
+       L 302 186 
+       L 472 186 
+       L 335 285 
+       L 387 448 
+       L 250 348 
+       L 113 448 
+       L 165 285 
+       L 28 186 
+       L 198 186 Z"
+    fill="#881519"
+    stroke="#FEE101"
+    stroke-width="15"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+  <!-- Stylized Fist / Boxing Glove Emblem ("GSD") in bold white contour -->
+  <g id="gsd-glove-monogram">
+    <!-- Main Boxing Glove Contour (Left Knuckle & Fist wrap) -->
+    <path
+      d="M 125 258 
+         C 125 228, 150 212, 190 212 
+         L 260 212 
+         C 278 212, 284 224, 284 242 
+         C 284 268, 270 286, 252 292
+         C 230 300, 206 292, 196 288
+         C 192 286, 190 292, 194 296
+         C 208 308, 222 308, 244 308
+         L 264 308
+         C 282 308, 288 318, 288 334
+         L 288 344
+         L 214 344
+         C 192 344, 184 332, 184 322
+         C 184 316, 190 310, 198 310
+         C 204 310, 208 304, 204 298
+         C 198 290, 178 296, 160 302
+         C 134 310, 125 292, 125 258 Z"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="15"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <!-- Right "D" / Glove Cuff Block -->
+    <path
+      d="M 298 212
+         L 345 212
+         C 372 212, 385 230, 385 272
+         C 385 316, 372 344, 345 344
+         L 298 344 Z"
+      fill="#881519"
+      stroke="#FFFFFF"
+      stroke-width="15"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <!-- The "S" interlock bridge inside the glove -->
+    <path
+      d="M 216 308
+         L 252 308
+         C 264 308, 268 314, 268 325
+         C 268 332, 262 336, 250 336
+         L 220 336"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+    <!-- 3-Petal Yellow Fan / Trefoil Symbol in the upper joint -->
+    <g id="trefoil-emblem" fill="#FEE101" stroke="#881519" stroke-width="2">
+      <!-- Top Petal -->
+      <path d="M 235 255 C 235 240, 245 220, 250 220 C 255 220, 265 240, 265 255 C 265 264, 258 268, 250 268 C 242 268, 235 264, 235 255 Z" />
+      <!-- Bottom Left Petal -->
+      <path d="M 244 262 C 234 260, 206 256, 206 262 C 206 268, 222 284, 232 284 C 240 284, 246 276, 244 262 Z" />
+      <!-- Bottom Right Petal -->
+      <path d="M 256 262 C 266 260, 294 256, 294 262 C 294 268, 278 284, 268 284 C 260 284, 254 276, 256 262 Z" />
+      <!-- Center Core dot -->
+      <circle cx="250" cy="260" r="5" fill="#881519" />
+    </g>
+  </g>
+</svg>
