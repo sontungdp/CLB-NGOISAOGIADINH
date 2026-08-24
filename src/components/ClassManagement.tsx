@@ -28,7 +28,7 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({
 
   // Form State
   const [name, setName] = useState('');
-  const [branchId, setBranchId] = useState<'cn1' | 'cn2'>('cn1');
+  const [branchId, setBranchId] = useState<'cn1' | 'cn2' | 'all'>('all');
   const [disciplineId, setDisciplineId] = useState('boxing');
   const [coachName, setCoachName] = useState('');
   const [timeSlot, setTimeSlot] = useState('18:00 - 19:30');
@@ -37,13 +37,13 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({
   const [room, setRoom] = useState('Phòng Tập 1');
 
   const filteredClasses = classes.filter(
-    (c) => branchFilter === 'all' || c.branchId === branchFilter
+    (c) => branchFilter === 'all' || c.branchId === 'all' || c.branchId === branchFilter
   );
 
   const handleOpenAdd = () => {
     setEditingClass(null);
     setName('');
-    setBranchId(branchFilter === 'cn2' ? 'cn2' : 'cn1');
+    setBranchId(branchFilter === 'cn2' ? 'cn2' : branchFilter === 'cn1' ? 'cn1' : 'all');
     setDisciplineId(disciplines[0]?.id || 'boxing');
     setCoachName('');
     setTimeSlot('18:00 - 19:30');
@@ -117,11 +117,11 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({
           <select
             value={branchFilter}
             onChange={(e) => onSelectBranchFilter(e.target.value as BranchFilter)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-red-600 focus:bg-white cursor-pointer"
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-red-600 focus:bg-white cursor-pointer font-medium"
           >
             <option value="all">🏢 Tất cả 2 Chi Nhánh</option>
-            <option value="cn1">📍 Chi Nhánh 1 (Phan Đăng Lưu)</option>
-            <option value="cn2">📍 Chi Nhánh 2 (Nguyễn Văn Đậu)</option>
+            <option value="cn1">📍 Cơ Sở 1 (Phan Chu Trinh)</option>
+            <option value="cn2">📍 Cơ Sở 2 (Nơ Trang Long)</option>
           </select>
 
           <button
@@ -150,13 +150,17 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({
                 <div className="flex items-start justify-between gap-2">
                   <span
                     className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold border ${
-                      cls.branchId === 'cn1'
+                      cls.branchId === 'all'
+                        ? 'bg-purple-50 text-purple-800 border-purple-200'
+                        : cls.branchId === 'cn1'
                         ? 'bg-amber-50 text-amber-800 border-amber-200'
                         : 'bg-blue-50 text-blue-800 border-blue-200'
                     }`}
                   >
                     <MapPin className="w-3 h-3" />
-                    {branch?.shortName || cls.branchId}
+                    {cls.branchId === 'all'
+                      ? 'Cả 2 Chi Nhánh'
+                      : branch?.shortName || (cls.branchId === 'cn1' ? 'Cơ Sở 1 (Phan Chu Trinh)' : 'Cơ Sở 2 (Nơ Trang Long)')}
                   </span>
 
                   <div className="flex items-center gap-1">
@@ -259,15 +263,16 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Chi Nhánh
+                    Cơ Sở / Chi Nhánh Áp Dụng
                   </label>
                   <select
                     value={branchId}
-                    onChange={(e) => setBranchId(e.target.value as any)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 focus:ring-2 focus:ring-red-600 focus:bg-white outline-none cursor-pointer"
+                    onChange={(e) => setBranchId(e.target.value as 'cn1' | 'cn2' | 'all')}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 font-semibold focus:ring-2 focus:ring-red-600 focus:bg-white outline-none cursor-pointer"
                   >
-                    <option value="cn1">Chi Nhánh 1 (Phan Đăng Lưu)</option>
-                    <option value="cn2">Chi Nhánh 2 (Nguyễn Văn Đậu)</option>
+                    <option value="all">🏢 Cả 2 Chi Nhánh (Toàn Hệ Thống)</option>
+                    <option value="cn1">📍 Cơ Sở 1 (2A Phan Chu Trinh)</option>
+                    <option value="cn2">📍 Cơ Sở 2 (25A Nơ Trang Long)</option>
                   </select>
                 </div>
 

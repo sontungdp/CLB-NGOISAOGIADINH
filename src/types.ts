@@ -67,7 +67,7 @@ export interface Student {
 export interface ClassSession {
   id: string;
   name: string;
-  branchId: BranchId;
+  branchId: BranchId | 'all'; // 'cn1', 'cn2', or 'all' (Cả 2 chi nhánh)
   disciplineId: string;
   coachName: string;
   scheduleDays: string[]; // ['T2', 'T4', 'T6']

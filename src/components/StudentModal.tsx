@@ -61,7 +61,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
 
   // Available classes for selected branch & discipline
   const filteredClasses = classes.filter(
-    (c) => c.branchId === branchId && (disciplineId ? c.disciplineId === disciplineId : true)
+    (c) => (c.branchId === 'all' || c.branchId === branchId) && (disciplineId ? c.disciplineId === disciplineId : true)
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -314,7 +314,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
                 <option value="">-- Chưa xếp lớp / Tập tự do --</option>
                 {filteredClasses.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name} ({c.timeSlot})
+                    {c.name} {c.branchId === 'all' ? '🏢 (Cả 2 CS)' : ''} ({c.timeSlot})
                   </option>
                 ))}
               </select>

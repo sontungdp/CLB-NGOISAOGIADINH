@@ -48,7 +48,7 @@ export const AttendanceTracker: React.FC<AttendanceTrackerProps> = ({
   );
 
   // Available classes for selected branch
-  const branchClasses = classes.filter((c) => c.branchId === selectedBranchId);
+  const branchClasses = classes.filter((c) => c.branchId === 'all' || c.branchId === selectedBranchId);
   const [selectedClassId, setSelectedClassId] = useState<string>(branchClasses[0]?.id || '');
 
   const activeClass = classes.find((c) => c.id === selectedClassId) || branchClasses[0];
@@ -119,13 +119,13 @@ export const AttendanceTracker: React.FC<AttendanceTrackerProps> = ({
               onChange={(e) => {
                 const bId = e.target.value as 'cn1' | 'cn2';
                 setSelectedBranchId(bId);
-                const nextClasses = classes.filter((c) => c.branchId === bId);
+                const nextClasses = classes.filter((c) => c.branchId === 'all' || c.branchId === bId);
                 if (nextClasses.length > 0) setSelectedClassId(nextClasses[0].id);
               }}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:ring-2 focus:ring-red-600 focus:bg-white font-semibold cursor-pointer"
             >
-              <option value="cn1">📍 Chi Nhánh 1 (Phan Đăng Lưu)</option>
-              <option value="cn2">📍 Chi Nhánh 2 (Nguyễn Văn Đậu)</option>
+              <option value="cn1">📍 Cơ Sở 1 (2A Phan Chu Trinh)</option>
+              <option value="cn2">📍 Cơ Sở 2 (25A Nơ Trang Long)</option>
             </select>
           </div>
 

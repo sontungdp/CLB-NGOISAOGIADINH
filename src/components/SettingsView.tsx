@@ -11,6 +11,7 @@ import {
 import { formatVND } from '../utils/formatters';
 import { StorageService } from '../utils/storage';
 import { ClubLogo } from './ClubLogo';
+import { VIETNAMESE_BANKS } from '../data/vietnameseBanks';
 import {
   Settings,
   DollarSign,
@@ -958,12 +959,47 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
                   {/* Bank info */}
                   <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2.5 mt-2 shadow-xs">
-                    <p className="font-bold text-red-700 text-xs flex items-center gap-1.5">
-                      <CreditCard className="w-3.5 h-3.5" /> Thông Tin Ngân Hàng VietQR ({branch.shortName})
-                    </p>
+                    <div className="flex items-center justify-between">
+                      <p className="font-bold text-red-700 text-xs flex items-center gap-1.5">
+                        <CreditCard className="w-3.5 h-3.5" /> Thông Tin Ngân Hàng VietQR ({branch.shortName})
+                      </p>
+                      {branch.bankBin && (
+                        <span className="text-[10px] font-mono bg-red-50 text-red-700 px-2 py-0.5 rounded-md border border-red-200 font-bold">
+                          BIN: {branch.bankBin}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Bank Selection Dropdown with BIN */}
+                    <div>
+                      <label className="block text-slate-700 text-[11px] mb-1 font-bold">
+                        🏦 Chọn Ngân Hàng & Mã BIN (Chuẩn VietQR)
+                      </label>
+                      <select
+                        value={branch.bankBin}
+                        onChange={(e) => {
+                          const selectedBin = e.target.value;
+                          const bank = VIETNAMESE_BANKS.find((b) => b.bin === selectedBin);
+                          const next = [...editedBranches];
+                          next[idx].bankBin = selectedBin;
+                          if (bank) {
+                            next[idx].bankName = bank.name;
+                          }
+                          setEditedBranches(next);
+                        }}
+                        className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-medium focus:ring-2 focus:ring-red-600 focus:bg-white cursor-pointer"
+                      >
+                        <option value="">-- Chọn ngân hàng trong danh sách --</option>
+                        {VIETNAMESE_BANKS.map((b) => (
+                          <option key={b.bin} value={b.bin}>
+                            [{b.bin}] {b.shortName} - {b.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
                     <div>
-                      <label className="block text-slate-500 text-[11px] mb-0.5 font-medium">Tên Ngân Hàng</label>
+                      <label className="block text-slate-500 text-[11px] mb-0.5 font-medium">Tên Ngân Hàng (Hiển Thị Trên Phiếu / Lời Nhắc)</label>
                       <input
                         type="text"
                         value={branch.bankName}
@@ -972,6 +1008,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                           next[idx].bankName = e.target.value;
                           setEditedBranches(next);
                         }}
+                        placeholder="MB Bank, Vietcombank, Techcombank..."
                         className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-slate-900 font-semibold"
                       />
                     </div>
@@ -987,11 +1024,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             next[idx].bankAccount = e.target.value;
                             setEditedBranches(next);
                           }}
+                          placeholder="0123456789"
                           className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-red-700 font-mono font-bold"
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-500 text-[11px] mb-0.5 font-medium">Mã BIN Ngân Hàng</label>
+                        <label className="block text-slate-500 text-[11px] mb-0.5 font-medium">Mã BIN Ngân Hàng (6 Chữ Số)</label>
                         <input
                           type="text"
                           value={branch.bankBin}
@@ -1001,7 +1039,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                             setEditedBranches(next);
                           }}
                           placeholder="970422 (MB), 970436 (VCB)..."
-                          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-slate-900 font-mono"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-slate-900 font-mono font-bold"
                         />
                       </div>
                     </div>
@@ -1016,6 +1054,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                           next[idx].bankOwner = e.target.value;
                           setEditedBranches(next);
                         }}
+                        placeholder="NGUYEN VAN A"
                         className="w-full bg-slate-50 border border-slate-300 rounded-lg p-1.5 text-xs text-slate-900 font-bold"
                       />
                     </div>
