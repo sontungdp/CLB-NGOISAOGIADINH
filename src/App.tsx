@@ -70,7 +70,7 @@ export default function App() {
   // Core Data State with immediate synchronous default values
   const [students, setStudents] = useState<Student[]>(() => StorageService.getStudents());
   const [branches, setBranches] = useState<Branch[]>(() => StorageService.getBranches());
-  const [disciplines, setDisciplines] = useState<Discipline[]>(INITIAL_DISCIPLINES);
+  const [disciplines, setDisciplines] = useState<Discipline[]>(() => StorageService.getDisciplines());
   const [packages, setPackages] = useState<FeePackage[]>(() => StorageService.getPackages());
   const [classes, setClasses] = useState<ClassSession[]>(() => StorageService.getClasses());
   const [receipts, setReceipts] = useState<PaymentReceipt[]>(() => StorageService.getReceipts());
@@ -98,6 +98,7 @@ export default function App() {
   const loadAllData = () => {
     setStudents(StorageService.getStudents());
     setBranches(StorageService.getBranches());
+    setDisciplines(StorageService.getDisciplines());
     setPackages(StorageService.getPackages());
     setClasses(StorageService.getClasses());
     setReceipts(StorageService.getReceipts());
@@ -260,6 +261,11 @@ export default function App() {
   const handleSavePackages = (pkgs: FeePackage[]) => {
     setPackages(pkgs);
     StorageService.savePackages(pkgs);
+  };
+
+  const handleSaveDisciplines = (newDisciplines: Discipline[]) => {
+    setDisciplines(newDisciplines);
+    StorageService.saveDisciplines(newDisciplines);
   };
 
   const handleSaveUsers = (newUsers: UserAccount[]) => {
@@ -444,6 +450,7 @@ export default function App() {
             users={users}
             onSaveConfig={handleSaveConfig}
             onSavePackages={handleSavePackages}
+            onSaveDisciplines={handleSaveDisciplines}
             onSaveUsers={handleSaveUsers}
             onResetData={handleResetData}
             onReloadAllData={loadAllData}

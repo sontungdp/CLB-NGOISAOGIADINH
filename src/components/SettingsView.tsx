@@ -36,6 +36,16 @@ import {
   Unlock,
   AlertCircle,
   X,
+  Swords,
+  Flame,
+  Zap,
+  ShieldAlert,
+  Award,
+  Trophy,
+  Sword,
+  Activity,
+  Dumbbell,
+  Target,
 } from 'lucide-react';
 
 interface SettingsViewProps {
@@ -46,10 +56,63 @@ interface SettingsViewProps {
   users: UserAccount[];
   onSaveConfig: (config: ClubConfig) => void;
   onSavePackages: (packages: FeePackage[]) => void;
+  onSaveDisciplines: (disciplines: Discipline[]) => void;
   onSaveUsers: (users: UserAccount[]) => void;
   onResetData: () => void;
   onReloadAllData: () => void;
 }
+
+const COLOR_PRESETS = [
+  { id: 'from-red-600 to-orange-500', name: 'Đỏ Lửa Boxing', preview: 'bg-gradient-to-r from-red-600 to-orange-500' },
+  { id: 'from-amber-500 to-yellow-600', name: 'Vàng Hổ Phách', preview: 'bg-gradient-to-r from-amber-500 to-yellow-600' },
+  { id: 'from-rose-600 to-red-700', name: 'Đỏ Thẫm Muay Thai', preview: 'bg-gradient-to-r from-rose-600 to-red-700' },
+  { id: 'from-blue-600 to-sky-500', name: 'Xanh Vovinam', preview: 'bg-gradient-to-r from-blue-600 to-sky-500' },
+  { id: 'from-indigo-600 to-blue-500', name: 'Xanh Chàm Taekwondo', preview: 'bg-gradient-to-r from-indigo-600 to-blue-500' },
+  { id: 'from-emerald-600 to-teal-500', name: 'Xanh Ngọc Cổ Truyền', preview: 'bg-gradient-to-r from-emerald-600 to-teal-500' },
+  { id: 'from-purple-600 to-indigo-500', name: 'Tím Thể Lực & Gym', preview: 'bg-gradient-to-r from-purple-600 to-indigo-500' },
+  { id: 'from-slate-800 to-slate-950', name: 'Đen Huyền Bí MMA/BJJ', preview: 'bg-gradient-to-r from-slate-800 to-slate-950' },
+  { id: 'from-pink-600 to-rose-500', name: 'Hồng Năng Động', preview: 'bg-gradient-to-r from-pink-600 to-rose-500' },
+  { id: 'from-cyan-600 to-blue-600', name: 'Xanh Biển Karate', preview: 'bg-gradient-to-r from-cyan-600 to-blue-600' },
+];
+
+const ICON_PRESETS = [
+  { id: 'Flame', label: 'Ngọn Lửa (Boxing / Chiến Đấu)', icon: Flame },
+  { id: 'Zap', label: 'Tia Chớp (Kickboxing / Tốc Độ)', icon: Zap },
+  { id: 'ShieldAlert', label: 'Khiên Đối Kháng (Muay Thai)', icon: ShieldAlert },
+  { id: 'Award', label: 'Huy Chương (Vovinam / Võ Đạo)', icon: Award },
+  { id: 'Trophy', label: 'Cúp Vô Địch (Taekwondo / Thi Đấu)', icon: Trophy },
+  { id: 'Sword', label: 'Kiếm Thuật (Võ Cổ Truyền / Binh Khí)', icon: Sword },
+  { id: 'Activity', label: 'Nhịp Tim (Thể Lực / Cardio)', icon: Activity },
+  { id: 'Dumbbell', label: 'Tạ Tay (Gym & Sức Mạnh)', icon: Dumbbell },
+  { id: 'Target', label: 'Hồng Tâm (Kỹ Thuật Chuẩn Xác)', icon: Target },
+  { id: 'Swords', label: 'Song Kiếm (Đối Kháng Tổng Hợp / MMA)', icon: Swords },
+];
+
+const renderDisciplineIcon = (iconName: string, className = 'w-5 h-5') => {
+  switch (iconName) {
+    case 'Flame':
+      return <Flame className={className} />;
+    case 'Zap':
+      return <Zap className={className} />;
+    case 'ShieldAlert':
+      return <ShieldAlert className={className} />;
+    case 'Award':
+      return <Award className={className} />;
+    case 'Trophy':
+      return <Trophy className={className} />;
+    case 'Sword':
+      return <Sword className={className} />;
+    case 'Activity':
+      return <Activity className={className} />;
+    case 'Dumbbell':
+      return <Dumbbell className={className} />;
+    case 'Target':
+      return <Target className={className} />;
+    case 'Swords':
+    default:
+      return <Swords className={className} />;
+  }
+};
 
 export const SettingsView: React.FC<SettingsViewProps> = ({
   config,
@@ -59,11 +122,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   users,
   onSaveConfig,
   onSavePackages,
+  onSaveDisciplines,
   onSaveUsers,
   onResetData,
   onReloadAllData,
 }) => {
-  const [activeTab, setActiveTab] = useState<'packages' | 'branches' | 'identity' | 'users' | 'backup'>('packages');
+  const [activeTab, setActiveTab] = useState<'packages' | 'disciplines' | 'branches' | 'identity' | 'users' | 'backup'>('packages');
 
   // Club identity edit state
   const [clubName, setClubName] = useState(config.clubName || 'CLB NGÔI SAO GIA ĐỊNH');
@@ -71,9 +135,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [hotline, setHotline] = useState(config.hotline || '1900 6868 - 0907 888 111');
   const [reminderTemplate, setReminderTemplate] = useState(config.defaultReminderTemplate || '');
 
-  // Branch edit state
+  // Branch and state
   const [editedBranches, setEditedBranches] = useState<Branch[]>(branches);
   const [editedPackages, setEditedPackages] = useState<FeePackage[]>(packages);
+  const [editedDisciplines, setEditedDisciplines] = useState<Discipline[]>(disciplines);
   const [userList, setUserList] = useState<UserAccount[]>(users);
 
   // Sync state when props change
@@ -84,6 +149,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   useEffect(() => {
     setEditedPackages(packages);
   }, [packages]);
+
+  useEffect(() => {
+    setEditedDisciplines(disciplines);
+  }, [disciplines]);
 
   useEffect(() => {
     setUserList(users);
@@ -113,6 +182,15 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   // New package modal state
   const [showPkgModal, setShowPkgModal] = useState(false);
   const [editingPkg, setEditingPkg] = useState<FeePackage | null>(null);
+
+  // Discipline modal state
+  const [showDisciplineModal, setShowDisciplineModal] = useState(false);
+  const [editingDiscipline, setEditingDiscipline] = useState<Discipline | null>(null);
+  const [discName, setDiscName] = useState('');
+  const [discShortCode, setDiscShortCode] = useState('');
+  const [discColor, setDiscColor] = useState('from-red-600 to-orange-500');
+  const [discIconName, setDiscIconName] = useState('Flame');
+  const [discModalError, setDiscModalError] = useState('');
 
   // Package Form State
   const [pkgName, setPkgName] = useState('');
@@ -188,6 +266,100 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       const updated = editedPackages.filter((p) => p.id !== pkgId);
       setEditedPackages(updated);
       onSavePackages(updated);
+    }
+  };
+
+  // -------------------------------------------------------------
+  // DISCIPLINE CRUD HANDLERS
+  // -------------------------------------------------------------
+  const handleOpenAddDiscipline = () => {
+    setEditingDiscipline(null);
+    setDiscName('');
+    setDiscShortCode('');
+    setDiscColor('from-red-600 to-orange-500');
+    setDiscIconName('Flame');
+    setDiscModalError('');
+    setShowDisciplineModal(true);
+  };
+
+  const handleOpenEditDiscipline = (disc: Discipline) => {
+    setEditingDiscipline(disc);
+    setDiscName(disc.name);
+    setDiscShortCode(disc.shortCode);
+    setDiscColor(disc.color || 'from-red-600 to-orange-500');
+    setDiscIconName(disc.iconName || 'Flame');
+    setDiscModalError('');
+    setShowDisciplineModal(true);
+  };
+
+  const handleSaveDisciplineSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setDiscModalError('');
+
+    if (!discName.trim()) {
+      setDiscModalError('Vui lòng nhập tên bộ môn!');
+      return;
+    }
+
+    if (!discShortCode.trim()) {
+      setDiscModalError('Vui lòng nhập mã viết tắt (ví dụ: BOX, KB, MMA, BJJ...)!');
+      return;
+    }
+
+    // Auto generate ID if new
+    let discId = editingDiscipline?.id;
+    if (!discId) {
+      const baseId = discShortCode.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+      discId = baseId || `disc-${Date.now()}`;
+      // Check duplicate ID
+      if (editedDisciplines.some((d) => d.id === discId)) {
+        discId = `${discId}-${Date.now().toString().slice(-4)}`;
+      }
+    }
+
+    const saved: Discipline = {
+      id: discId,
+      name: discName.trim(),
+      shortCode: discShortCode.trim().toUpperCase(),
+      color: discColor,
+      iconName: discIconName,
+    };
+
+    let updated: Discipline[];
+    if (editingDiscipline) {
+      updated = editedDisciplines.map((d) => (d.id === editingDiscipline.id ? saved : d));
+    } else {
+      updated = [...editedDisciplines, saved];
+    }
+
+    setEditedDisciplines(updated);
+    onSaveDisciplines(updated);
+    setShowDisciplineModal(false);
+    setSavedSuccess(true);
+    setTimeout(() => setSavedSuccess(false), 3000);
+  };
+
+  const handleDeleteDiscipline = (discId: string) => {
+    const disc = editedDisciplines.find((d) => d.id === discId);
+    if (!disc) return;
+
+    if (editedDisciplines.length <= 1) {
+      alert('Hệ thống cần duy trì ít nhất 1 bộ môn!');
+      return;
+    }
+
+    const packageCount = editedPackages.filter((p) => p.disciplineId === discId).length;
+    let confirmMsg = `Bạn có chắc chắn muốn xóa bộ môn "${disc.name}"?`;
+    if (packageCount > 0) {
+      confirmMsg += `\nLưu ý: Hiện có ${packageCount} gói học phí đang gắn với bộ môn này.`;
+    }
+
+    if (confirm(confirmMsg)) {
+      const updated = editedDisciplines.filter((d) => d.id !== discId);
+      setEditedDisciplines(updated);
+      onSaveDisciplines(updated);
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 3000);
     }
   };
 
@@ -401,6 +573,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           Bảng Giá & Gói Học Phí ({editedPackages.length})
         </button>
         <button
+          onClick={() => setActiveTab('disciplines')}
+          className={`py-3.5 px-4 text-xs font-bold border-b-2 transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'disciplines'
+              ? 'border-red-700 text-red-700 font-extrabold'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <Swords className="w-3.5 h-3.5" />
+          Quản Lý Bộ Môn ({editedDisciplines.length})
+        </button>
+        <button
           onClick={() => setActiveTab('branches')}
           className={`py-3.5 px-4 text-xs font-bold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === 'branches'
@@ -462,7 +645,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
             {editedPackages.map((pkg) => {
-              const discipline = disciplines.find((d) => d.id === pkg.disciplineId);
+              const discipline = editedDisciplines.find((d) => d.id === pkg.disciplineId);
 
               return (
                 <div
@@ -523,6 +706,129 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* TAB: DISCIPLINES MANAGEMENT */}
+      {activeTab === 'disciplines' && (
+        <div className="bg-white border border-slate-200 rounded-b-2xl p-6 shadow-sm space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-slate-900 text-lg">Danh Sách Bộ Môn Tập Luyện ({editedDisciplines.length})</h3>
+                <span className="px-2.5 py-0.5 text-xs font-bold text-red-800 bg-red-100 rounded-full border border-red-200">
+                  Tùy Chỉnh Động
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">
+                Thêm, sửa tên, mã viết tắt, màu nhận diện hoặc xóa bộ môn võ thuật / thể thao theo nhu cầu đào tạo của CLB.
+              </p>
+            </div>
+
+            <button
+              onClick={handleOpenAddDiscipline}
+              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-red-700 via-red-600 to-amber-600 hover:from-red-800 hover:to-amber-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-md shadow-red-700/20"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Thêm Bộ Môn Mới</span>
+            </button>
+          </div>
+
+          {/* Disciplines Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {editedDisciplines.map((disc) => {
+              const packageCount = editedPackages.filter((p) => p.disciplineId === disc.id).length;
+              const gradientClass = disc.color || 'from-red-600 to-orange-500';
+
+              return (
+                <div
+                  key={disc.id}
+                  className="bg-slate-50/80 hover:bg-white border border-slate-200 hover:border-red-300 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4 group"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between">
+                      {/* ShortCode Badge & Gradient Chip */}
+                      <div className="flex items-center gap-2.5">
+                        <div
+                          className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${gradientClass} text-white flex items-center justify-center shadow-sm shrink-0`}
+                        >
+                          {renderDisciplineIcon(disc.iconName || 'Flame', 'w-5 h-5')}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-900 text-white shadow-xs">
+                              {disc.shortCode}
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-mono">ID: {disc.id}</span>
+                          </div>
+                          <h4 className="font-black text-slate-900 text-base mt-1 group-hover:text-red-700 transition-colors">
+                            {disc.name}
+                          </h4>
+                        </div>
+                      </div>
+
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleOpenEditDiscipline(disc)}
+                          className="p-1.5 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                          title="Chỉnh sửa bộ môn"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDiscipline(disc.id)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                          title="Xóa bộ môn"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 bg-white border border-slate-200/80 rounded-xl space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">Màu nhận diện:</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`w-3.5 h-3.5 rounded-full bg-gradient-to-r ${gradientClass} shadow-xs`} />
+                          <span className="font-semibold text-slate-700 text-[11px]">
+                            {COLOR_PRESETS.find((c) => c.id === disc.color)?.name || 'Tùy chỉnh'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-slate-500">Gói học phí áp dụng:</span>
+                        <span className="font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[11px]">
+                          {packageCount} gói học phí
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Áp dụng trên cả 2 chi nhánh</span>
+                    <button
+                      onClick={() => handleOpenEditDiscipline(disc)}
+                      className="font-bold text-red-700 hover:underline cursor-pointer"
+                    >
+                      Sửa chi tiết &rarr;
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Quick add guide */}
+          <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 text-xs text-amber-900 flex items-start gap-3">
+            <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <span className="font-bold">Mẹo quản lý bộ môn:</span>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                Khi thêm mới bộ môn (như <em>Jiu-Jitsu / BJJ, Võ Cổ Truyền, Karate, Vovinam, Gym Thể Lực</em>), bộ môn này sẽ ngay lập tức xuất hiện trong danh sách khi tiếp nhận võ sinh mới, tạo lớp học và tạo gói học phí tương ứng.
+              </p>
+            </div>
           </div>
         </div>
       )}
@@ -1104,7 +1410,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     onChange={(e) => setPkgDisciplineId(e.target.value)}
                     className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-medium focus:ring-2 focus:ring-red-700 shadow-xs"
                   >
-                    {disciplines.map((d) => (
+                    {editedDisciplines.map((d) => (
                       <option key={d.id} value={d.id}>
                         {d.name}
                       </option>
@@ -1370,6 +1676,183 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 >
                   <Check className="w-4 h-4" />
                   {editingUser ? 'Lưu Thay Đổi' : 'Tạo Tài Khoản'}
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* MODAL ADD / EDIT DISCIPLINE */}
+      {showDisciplineModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+          <div className="relative w-full max-w-xl bg-white border border-slate-200 text-slate-900 rounded-2xl shadow-2xl overflow-hidden my-6">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-red-900 via-red-800 to-amber-900 text-white border-b border-red-950/20">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
+                  <Swords className="w-4 h-4 text-amber-300" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-base">
+                    {editingDiscipline ? 'Chỉnh Sửa Bộ Môn' : 'Thêm Bộ Môn Mới'}
+                  </h3>
+                  <p className="text-[11px] text-red-200">
+                    Cấu hình tên, mã viết tắt, màu chủ đạo và biểu tượng nhận diện
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowDisciplineModal(false)}
+                className="p-1.5 text-white/70 hover:text-white rounded-lg hover:bg-white/10 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveDisciplineSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+              {discModalError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{discModalError}</span>
+                </div>
+              )}
+
+              {/* Name & ShortCode */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Tên Bộ Môn <span className="text-red-700">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={discName}
+                    onChange={(e) => setDiscName(e.target.value)}
+                    placeholder="Ví dụ: Jiu-Jitsu / BJJ, Võ Cổ Truyền, MMA..."
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-bold focus:ring-2 focus:ring-red-700 shadow-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Mã Viết Tắt <span className="text-red-700">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    value={discShortCode}
+                    onChange={(e) => setDiscShortCode(e.target.value.toUpperCase())}
+                    placeholder="BJJ, MMA, KB..."
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono font-black uppercase focus:ring-2 focus:ring-red-700 shadow-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Live Preview Card */}
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  Xem trước hiển thị thực tế:
+                </span>
+                <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl shadow-xs">
+                  <div
+                    className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${discColor} text-white flex items-center justify-center shadow-sm shrink-0`}
+                  >
+                    {renderDisciplineIcon(discIconName, 'w-6 h-6')}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-900 text-white">
+                        {discShortCode || 'CODE'}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-medium">Bộ môn thi đấu & tập luyện</span>
+                    </div>
+                    <div className="font-black text-slate-900 text-base mt-0.5">
+                      {discName || 'Tên Bộ Môn Mới'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Color Gradient Presets */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700">
+                  Chọn Màu Gradient Nhận Diện Chủ Đạo
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {COLOR_PRESETS.map((color) => {
+                    const isSelected = discColor === color.id;
+                    return (
+                      <button
+                        key={color.id}
+                        type="button"
+                        onClick={() => setDiscColor(color.id)}
+                        className={`p-2 rounded-xl border text-left transition-all flex flex-col items-start gap-1.5 cursor-pointer ${
+                          isSelected
+                            ? 'border-red-600 ring-2 ring-red-600/30 bg-red-50/40'
+                            : 'border-slate-200 bg-white hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="w-full flex items-center justify-between">
+                          <div className={`w-6 h-6 rounded-lg ${color.preview} shadow-xs shrink-0`} />
+                          {isSelected && <Check className="w-3.5 h-3.5 text-red-600" />}
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-800 leading-tight">
+                          {color.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Icon Presets */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700">
+                  Chọn Biểu Tượng Nhận Diện
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {ICON_PRESETS.map((item) => {
+                    const isSelected = discIconName === item.id;
+                    const IconComp = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setDiscIconName(item.id)}
+                        className={`p-2.5 rounded-xl border text-center flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'border-red-600 bg-red-50 text-red-700 font-bold ring-2 ring-red-600/30'
+                            : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-900'
+                        }`}
+                      >
+                        <IconComp className="w-5 h-5" />
+                        <span className="text-[10px] leading-tight line-clamp-1">{item.label.split('(')[0]}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDisciplineModal(false)}
+                  className="px-4 py-2 bg-slate-200 text-slate-800 rounded-xl text-xs font-semibold hover:bg-slate-300 cursor-pointer"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-800 hover:to-amber-700 text-white font-bold rounded-xl text-xs shadow-sm cursor-pointer"
+                >
+                  <Check className="w-4 h-4" />
+                  {editingDiscipline ? 'Lưu Thay Đổi Bộ Môn' : 'Thêm Bộ Môn Ngay'}
                 </button>
               </div>
             </form>

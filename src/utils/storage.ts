@@ -6,6 +6,7 @@ import {
   AttendanceRecord,
   ClubConfig,
   Branch,
+  Discipline,
   UserAccount,
 } from '../types';
 import {
@@ -16,12 +17,14 @@ import {
   INITIAL_RECEIPTS,
   INITIAL_ATTENDANCE,
   INITIAL_BRANCHES,
+  INITIAL_DISCIPLINES,
   INITIAL_USERS,
 } from '../data/initialData';
 
 const KEYS = {
   CONFIG: 'nsgd_club_config_v1',
   BRANCHES: 'nsgd_branches_v1',
+  DISCIPLINES: 'nsgd_disciplines_v1',
   PACKAGES: 'nsgd_fee_packages_v1',
   CLASSES: 'nsgd_classes_v1',
   STUDENTS: 'nsgd_students_v1',
@@ -64,6 +67,19 @@ export const StorageService = {
 
   saveBranches(branches: Branch[]): void {
     localStorage.setItem(KEYS.BRANCHES, JSON.stringify(branches));
+  },
+
+  getDisciplines(): Discipline[] {
+    try {
+      const data = localStorage.getItem(KEYS.DISCIPLINES);
+      return data ? JSON.parse(data) : INITIAL_DISCIPLINES;
+    } catch {
+      return INITIAL_DISCIPLINES;
+    }
+  },
+
+  saveDisciplines(disciplines: Discipline[]): void {
+    localStorage.setItem(KEYS.DISCIPLINES, JSON.stringify(disciplines));
   },
 
   getPackages(): FeePackage[] {
@@ -247,6 +263,7 @@ export const StorageService = {
   resetToInitialData(): void {
     this.saveConfig(INITIAL_CONFIG);
     this.saveBranches(INITIAL_BRANCHES);
+    this.saveDisciplines(INITIAL_DISCIPLINES);
     this.savePackages(INITIAL_PACKAGES);
     this.saveClasses(INITIAL_CLASSES);
     this.saveStudents(INITIAL_STUDENTS);
@@ -262,6 +279,7 @@ export const StorageService = {
       club: 'CLB Ngôi Sao Gia Định',
       config: this.getConfig(),
       branches: this.getBranches(),
+      disciplines: this.getDisciplines(),
       packages: this.getPackages(),
       classes: this.getClasses(),
       students: this.getStudents(),
@@ -277,6 +295,7 @@ export const StorageService = {
       const parsed = JSON.parse(jsonString);
       if (parsed.config) this.saveConfig(parsed.config);
       if (parsed.branches) this.saveBranches(parsed.branches);
+      if (parsed.disciplines) this.saveDisciplines(parsed.disciplines);
       if (parsed.packages) this.savePackages(parsed.packages);
       if (parsed.classes) this.saveClasses(parsed.classes);
       if (parsed.students) this.saveStudents(parsed.students);

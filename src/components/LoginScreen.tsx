@@ -8,12 +8,8 @@ import {
   EyeOff,
   ShieldCheck,
   Building2,
-  Sparkles,
   AlertCircle,
   ArrowRight,
-  UserCheck,
-  KeyRound,
-  CheckCircle2,
 } from 'lucide-react';
 
 interface LoginScreenProps {
@@ -70,19 +66,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin, theme 
     // Success login
     const updatedUser: UserAccount = {
       ...matchedUser,
-      lastLogin: new Date().toLocaleString('vi-VN'),
-    };
-    onLogin(updatedUser);
-  };
-
-  const handleQuickLogin = (user: UserAccount) => {
-    setUsername(user.username);
-    setPassword(user.password || '123');
-    setErrorMessage('');
-    
-    // Auto login
-    const updatedUser: UserAccount = {
-      ...user,
       lastLogin: new Date().toLocaleString('vi-VN'),
     };
     onLogin(updatedUser);
@@ -256,58 +239,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin, theme 
               </button>
             </form>
 
-            {/* Quick Demo Login Section */}
-            <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  Đăng Nhập Nhanh (1 Chạm Demo)
-                </span>
-                <span className="text-[10px] text-slate-400">Chọn vai trò</span>
+            {/* Account security & login note */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Quy định bảo mật & phân quyền đăng nhập</span>
               </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
-                {users.map((u) => {
-                  const roleLabel =
-                    u.role === 'admin'
-                      ? 'Admin Toàn Quyền'
-                      : u.role === 'cashier'
-                      ? u.branchId === 'cn1'
-                        ? 'Thu Ngân CN1'
-                        : 'Thu Ngân CN2'
-                      : 'Huấn Luyện Viên';
-
-                  const badgeColor =
-                    u.role === 'admin'
-                      ? 'text-red-700 dark:text-red-400 bg-red-100 dark:bg-red-950/60 border-red-200 dark:border-red-800'
-                      : u.role === 'cashier'
-                      ? 'text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800'
-                      : 'text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800';
-
-                  return (
-                    <button
-                      key={u.id}
-                      type="button"
-                      onClick={() => handleQuickLogin(u)}
-                      className="p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-red-500 dark:hover:border-red-500 bg-slate-50 hover:bg-red-50/50 dark:bg-slate-800/40 dark:hover:bg-slate-800 text-left transition-all group cursor-pointer flex items-center gap-2.5"
-                    >
-                      <div className={`w-8 h-8 rounded-xl ${u.avatarColor} text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs`}>
-                        {u.fullName.split(' ').pop()?.charAt(0) || 'U'}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                          {u.fullName}
-                        </div>
-                        <div className="flex items-center gap-1 mt-0.5">
-                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded border ${badgeColor}`}>
-                            {roleLabel}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Nhân viên vui lòng nhập đúng tên đăng nhập và mật khẩu cá nhân được cấp. Nếu chưa có tài khoản hoặc quên mật khẩu, vui lòng liên hệ trực tiếp <strong>Quản Trị Viên (Admin)</strong> để được cấp lại.
+              </p>
             </div>
 
           </div>
