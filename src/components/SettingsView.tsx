@@ -23,7 +23,9 @@ import {
   Edit2,
   Trash2,
   Check,
+  CheckCircle2,
   Shield,
+  ShieldCheck,
   CreditCard,
   QrCode,
   Sparkles,
@@ -59,6 +61,7 @@ interface SettingsViewProps {
   onSaveDisciplines: (disciplines: Discipline[]) => void;
   onSaveUsers: (users: UserAccount[]) => void;
   onResetData: () => void;
+  onClearOperationalData: () => void;
   onReloadAllData: () => void;
 }
 
@@ -125,14 +128,18 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onSaveDisciplines,
   onSaveUsers,
   onResetData,
+  onClearOperationalData,
   onReloadAllData,
 }) => {
   const [activeTab, setActiveTab] = useState<'packages' | 'disciplines' | 'branches' | 'identity' | 'users' | 'backup'>('packages');
 
   // Club identity edit state
   const [clubName, setClubName] = useState(config.clubName || 'CLB NGÔI SAO GIA ĐỊNH');
+  const [category, setCategory] = useState(config.category || 'Trang · Câu lạc bộ thể thao');
+  const [clubAddress, setClubAddress] = useState(config.address || '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam');
+  const [hotline, setHotline] = useState(config.hotline || '096 677 90 99');
+  const [email, setEmail] = useState(config.email || 'ngoisaogiadinhvn@gmail.com');
   const [slogan, setSlogan] = useState(config.slogan || 'Rèn Luyện Ý Chí - Khỏe Mạnh Thể Chất - Tinh Thần Thượng Võ');
-  const [hotline, setHotline] = useState(config.hotline || '1900 6868 - 0907 888 111');
   const [reminderTemplate, setReminderTemplate] = useState(config.defaultReminderTemplate || '');
 
   // Branch and state
@@ -160,8 +167,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
   useEffect(() => {
     setClubName(config.clubName || 'CLB NGÔI SAO GIA ĐỊNH');
+    setCategory(config.category || 'Trang · Câu lạc bộ thể thao');
+    setClubAddress(config.address || '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam');
+    setHotline(config.hotline || '096 677 90 99');
+    setEmail(config.email || 'ngoisaogiadinhvn@gmail.com');
     setSlogan(config.slogan || 'Rèn Luyện Ý Chí - Khỏe Mạnh Thể Chất - Tinh Thần Thượng Võ');
-    setHotline(config.hotline || '1900 6868 - 0907 888 111');
     setReminderTemplate(config.defaultReminderTemplate || '');
   }, [config]);
 
@@ -191,6 +201,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [discColor, setDiscColor] = useState('from-red-600 to-orange-500');
   const [discIconName, setDiscIconName] = useState('Flame');
   const [discModalError, setDiscModalError] = useState('');
+
+  // Admin confirmation modal for wiping data
+  const [showAdminConfirmModal, setShowAdminConfirmModal] = useState(false);
+  const [adminVerifyPassword, setAdminVerifyPassword] = useState('');
+  const [adminVerifyError, setAdminVerifyError] = useState('');
+  const [adminVerifyActionType, setAdminVerifyActionType] = useState<'clear' | 'reset'>('clear');
 
   // Package Form State
   const [pkgName, setPkgName] = useState('');
@@ -493,8 +509,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     const newConfig: ClubConfig = {
       ...config,
       clubName,
-      slogan,
+      category,
+      address: clubAddress,
       hotline,
+      email,
+      slogan,
       defaultReminderTemplate: reminderTemplate,
       branches: editedBranches,
     };
@@ -1069,12 +1088,45 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </div>
 
             <div className="space-y-1.5">
+              <label className="font-bold text-slate-700">Phân Loại Trang / Doanh Nghiệp</label>
+              <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Ví dụ: Trang · Câu lạc bộ thể thao"
+                className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-semibold shadow-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="font-bold text-slate-700">Địa Chỉ Trụ Sở Chính CLB</label>
+              <input
+                type="text"
+                value={clubAddress}
+                onChange={(e) => setClubAddress(e.target.value)}
+                placeholder="2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam"
+                className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium shadow-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
               <label className="font-bold text-slate-700">Hotline Tổng Đài</label>
               <input
                 type="text"
                 value={hotline}
                 onChange={(e) => setHotline(e.target.value)}
                 className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono font-bold shadow-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-700">Email Liên Hệ Chính Thức</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ngoisaogiadinhvn@gmail.com"
+                className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 font-semibold shadow-xs"
               />
             </div>
 
@@ -1114,35 +1166,39 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            {/* Download Backup */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700">
-                <Download className="w-5 h-5" />
+            {/* 1. Download Backup */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-700">
+                  <Download className="w-5 h-5" />
+                </div>
+                <h4 className="font-bold text-slate-900 text-sm">1. Tải File Sao Lưu (.JSON)</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Lưu trữ toàn bộ 100% hồ sơ võ sinh, phiếu thu, điểm danh, gói cước và tài khoản về máy tính.
+                </p>
               </div>
-              <h4 className="font-bold text-slate-900 text-sm">Tải File Sao Lưu (Backup JSON)</h4>
-              <p className="text-xs text-slate-500">
-                Tạo 1 bản lưu đầy đủ học viên, doanh thu, gói học và phiếu thu của 2 cơ sở.
-              </p>
               <button
                 onClick={handleDownloadBackup}
-                className="w-full py-2.5 bg-linear-to-r from-red-700 to-amber-600 hover:from-red-800 hover:to-amber-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-sm"
+                className="w-full py-2.5 bg-gradient-to-r from-red-700 to-amber-600 hover:from-red-800 hover:to-amber-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
               >
                 Tải Xuống File Backup
               </button>
             </div>
 
-            {/* Upload Backup */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700">
-                <Upload className="w-5 h-5" />
+            {/* 2. Upload Backup */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700">
+                  <Upload className="w-5 h-5" />
+                </div>
+                <h4 className="font-bold text-slate-900 text-sm">2. Phục Hồi Từ File JSON</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Nạp lại toàn bộ dữ liệu từ file sao lưu .json đã lưu trước đó vào hệ thống.
+                </p>
               </div>
-              <h4 className="font-bold text-slate-900 text-sm">Phục Hồi Từ File JSON</h4>
-              <p className="text-xs text-slate-500">
-                Nhập dữ liệu đã sao lưu trước đó vào hệ thống quản lý.
-              </p>
-              <label className="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs text-center transition-colors cursor-pointer shadow-sm">
+              <label className="block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs text-center transition-colors cursor-pointer shadow-xs">
                 <span>Chọn File Phục Hồi (.json)</span>
                 <input
                   type="file"
@@ -1153,24 +1209,58 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </label>
             </div>
 
-            {/* Reset Demo Data */}
-            <div className="bg-slate-50 border border-red-200 rounded-2xl p-5 space-y-3 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-red-100 border border-red-200 flex items-center justify-center text-red-700">
-                <RotateCcw className="w-5 h-5" />
+            {/* 3. Clean Operational Data for Handover (BÀN GIAO KHÁCH HÀNG) */}
+            <div className="bg-emerald-50/70 border border-emerald-300 rounded-2xl p-5 space-y-3 shadow-xs flex flex-col justify-between ring-2 ring-emerald-500/20">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-800">
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-700 text-white shadow-xs">
+                    Khuyên Dùng
+                  </span>
+                </div>
+                <h4 className="font-bold text-emerald-950 text-sm">3. Dọn Sạch Để Bàn Giao</h4>
+                <p className="text-xs text-emerald-800 leading-relaxed">
+                  <strong>Xóa sạch toàn bộ:</strong> Võ sinh mẫu, phiếu thu tiền & lịch sử điểm danh. <br />
+                  <strong>Giữ nguyên:</strong> 2 Chi nhánh, bộ môn, gói học phí & tài khoản Admin.
+                </p>
               </div>
-              <h4 className="font-bold text-slate-900 text-sm">Khôi Phục Dữ Liệu Gốc</h4>
-              <p className="text-xs text-slate-500">
-                Xóa và nạp lại toàn bộ dữ liệu mẫu chuẩn của CLB Ngôi Sao Gia Định.
-              </p>
               <button
                 onClick={() => {
-                  if (confirm('Bạn có chắc chắn muốn khôi phục về dữ liệu mẫu ban đầu? Toàn bộ thay đổi gần nhất sẽ được làm mới.')) {
-                    onResetData();
-                  }
+                  setAdminVerifyActionType('clear');
+                  setAdminVerifyPassword('');
+                  setAdminVerifyError('');
+                  setShowAdminConfirmModal(true);
                 }}
-                className="w-full py-2.5 bg-white hover:bg-red-50 text-slate-700 hover:text-red-700 border border-slate-300 hover:border-red-300 font-semibold rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
+                className="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
               >
-                Làm Mới Dữ Liệu Mẫu
+                <ShieldCheck className="w-4 h-4" />
+                <span>Dọn Sạch Bàn Giao (CLB Trắng)</span>
+              </button>
+            </div>
+
+            {/* 4. Reset to Initial Demo Data */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 shadow-xs flex flex-col justify-between">
+              <div className="space-y-2.5">
+                <div className="w-10 h-10 rounded-xl bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-700">
+                  <RotateCcw className="w-5 h-5" />
+                </div>
+                <h4 className="font-bold text-slate-900 text-sm">4. Nạp Dữ Liệu Mẫu (Demo)</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Khôi phục lại toàn bộ dữ liệu mẫu ban đầu để kiểm thử các tính năng phần mềm.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setAdminVerifyActionType('reset');
+                  setAdminVerifyPassword('');
+                  setAdminVerifyError('');
+                  setShowAdminConfirmModal(true);
+                }}
+                className="w-full py-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
+              >
+                Nạp Lại Dữ Liệu Mẫu
               </button>
             </div>
 
@@ -1853,6 +1943,152 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 >
                   <Check className="w-4 h-4" />
                   {editingDiscipline ? 'Lưu Thay Đổi Bộ Môn' : 'Thêm Bộ Môn Ngay'}
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* MODAL ADMIN PASSWORD CONFIRMATION BEFORE WIPING DATA */}
+      {showAdminConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 overflow-y-auto">
+          <div className="relative w-full max-w-md bg-white border border-slate-200 text-slate-900 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            
+            {/* Modal Header */}
+            <div className="px-6 py-5 bg-gradient-to-r from-red-900 via-red-800 to-amber-900 text-white border-b border-red-950/30">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-amber-300 shadow-xs">
+                    <ShieldAlert className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-white text-base">
+                      {adminVerifyActionType === 'clear' ? 'Xác Nhận Dọn Sạch Dữ Liệu' : 'Xác Nhận Nạp Lại Dữ Liệu'}
+                    </h3>
+                    <p className="text-xs text-red-200">
+                      Yêu cầu xác thực mật khẩu Quản Trị Viên (Admin)
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowAdminConfirmModal(false)}
+                  className="p-1.5 text-white/70 hover:text-white rounded-lg hover:bg-white/10 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setAdminVerifyError('');
+
+                // Check admin password
+                const adminUsers = userList.filter((u) => u.role === 'admin' && u.isActive !== false);
+                const isPasswordValid = adminUsers.some(
+                  (admin) => (admin.password || '123') === adminVerifyPassword.trim()
+                );
+
+                if (!isPasswordValid) {
+                  setAdminVerifyError('Mật khẩu Admin không chính xác! Vui lòng thử lại.');
+                  return;
+                }
+
+                // Password verified
+                setShowAdminConfirmModal(false);
+                setAdminVerifyPassword('');
+
+                if (adminVerifyActionType === 'clear') {
+                  onClearOperationalData();
+                  alert(' ĐÃ XÁC THỰC ADMIN THÀNH CÔNG!\n\nĐã dọn sạch toàn bộ hồ sơ võ sinh, phiếu thu và nhật ký điểm danh.\nHệ thống sẵn sàng bàn giao trắng cho khách hàng nhập liệu thực tế.');
+                } else {
+                  onResetData();
+                  alert(' ĐÃ XÁC THỰC ADMIN THÀNH CÔNG!\n\nĐã nạp lại dữ liệu mẫu thử nghiệm ban đầu của CLB Ngôi Sao Gia Định.');
+                }
+              }}
+              className="p-6 space-y-5"
+            >
+              {/* Warning box */}
+              {adminVerifyActionType === 'clear' ? (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-2xl space-y-2 text-xs text-red-900">
+                  <div className="flex items-center gap-2 font-bold text-red-800 text-sm">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+                    <span>Hành Động Không Thể Hoàn Tác</span>
+                  </div>
+                  <ul className="list-disc pl-4 space-y-1 text-slate-700 text-[11px] leading-relaxed">
+                    <li><strong className="text-red-700">XÓA SẠCH 100%:</strong> Toàn bộ hồ sơ võ sinh, lịch sử phiếu thu học phí & nhật ký điểm danh.</li>
+                    <li><strong className="text-emerald-700">GIỮ NGUYÊN:</strong> Cấu hình CLB, 2 chi nhánh, bảng giá gói học phí, bộ môn & tài khoản nhân viên.</li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-2 text-xs text-amber-900">
+                  <div className="flex items-center gap-2 font-bold text-amber-900 text-sm">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+                    <span>Làm Mới Về Bản Mẫu Gốc</span>
+                  </div>
+                  <p className="text-[11px] text-amber-800 leading-relaxed">
+                    Toàn bộ thay đổi thực tế hiện tại sẽ được thay thế bằng danh sách võ sinh và phiếu thu mẫu demo.
+                  </p>
+                </div>
+              )}
+
+              {adminVerifyError && (
+                <div className="p-3 bg-red-100 border border-red-300 text-red-800 rounded-xl text-xs flex items-center gap-2 font-semibold">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{adminVerifyError}</span>
+                </div>
+              )}
+
+              {/* Password Input */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-800">
+                  Nhập Mật Khẩu Admin Để Xác Nhận <span className="text-red-600">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    required
+                    autoFocus
+                    value={adminVerifyPassword}
+                    onChange={(e) => {
+                      setAdminVerifyPassword(e.target.value);
+                      if (adminVerifyError) setAdminVerifyError('');
+                    }}
+                    placeholder="Nhập mật khẩu tài khoản Admin..."
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 pl-10 text-sm text-slate-900 font-bold focus:ring-2 focus:ring-red-700 focus:bg-white transition-all shadow-xs"
+                  />
+                  <Shield className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                </div>
+                <p className="text-[10px] text-slate-500 italic">
+                  Chỉ tài khoản có vai trò <strong>Quản Trị Viên (Admin)</strong> mới có quyền thực thi thao tác này.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowAdminConfirmModal(false)}
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  className={`px-5 py-2.5 text-white font-extrabold rounded-xl text-xs shadow-md transition-all cursor-pointer flex items-center gap-2 ${
+                    adminVerifyActionType === 'clear'
+                      ? 'bg-emerald-700 hover:bg-emerald-800 shadow-emerald-700/20'
+                      : 'bg-red-700 hover:bg-red-800 shadow-red-700/20'
+                  }`}
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Xác Nhận & Thực Hiện Ngay</span>
                 </button>
               </div>
             </form>

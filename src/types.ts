@@ -76,7 +76,7 @@ export interface ClassSession {
   room?: string;
 }
 
-export type PaymentMethod = 'cash' | 'transfer' | 'pos';
+export type PaymentMethod = 'cash' | 'transfer';
 
 export interface PaymentReceipt {
   id: string;
@@ -117,8 +117,11 @@ export interface AttendanceRecord {
 
 export interface ClubConfig {
   clubName: string;
+  category?: string; // e.g. "Trang · Câu lạc bộ thể thao"
+  address?: string; // "2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam"
+  hotline: string; // "096 677 90 99"
+  email?: string; // "ngoisaogiadinhvn@gmail.com"
   slogan: string;
-  hotline: string;
   branches: Branch[];
   defaultReminderTemplate: string;
 }

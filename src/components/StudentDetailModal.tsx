@@ -307,7 +307,7 @@ export const StudentDetailModal: React.FC<StudentDetailModalProps> = ({
                       <div className="flex items-center gap-2">
                         <span className="font-mono font-bold text-red-700 text-xs">{r.receiptCode}</span>
                         <span className="text-xs px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-medium">
-                          {r.paymentMethod === 'transfer' ? 'VietQR' : r.paymentMethod === 'cash' ? 'Tiền mặt' : 'POS'}
+                          {r.paymentMethod === 'transfer' ? 'VietQR' : 'Tiền mặt'}
                         </span>
                       </div>
                       <p className="text-sm font-semibold text-slate-900 mt-1">{r.packageName}</p>

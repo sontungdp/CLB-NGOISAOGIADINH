@@ -164,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <MapPin className="w-3 h-3" />
-                  Cơ Sở 1 (Phan Đăng Lưu)
+                  Cơ Sở 1 (Phan Chu Trinh)
                 </button>
                 <button
                   onClick={() => onChangeBranchFilter('cn2')}
@@ -175,7 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }`}
                 >
                   <MapPin className="w-3 h-3" />
-                  Cơ Sở 2 (Nguyễn Văn Đậu)
+                  Cơ Sở 2 (Nơ Trang Long)
                 </button>
               </>
             )}

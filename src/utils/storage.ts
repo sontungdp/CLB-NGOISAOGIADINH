@@ -39,9 +39,29 @@ export const StorageService = {
     try {
       const data = localStorage.getItem(KEYS.CONFIG);
       if (data) {
-        const parsed = JSON.parse(data);
+        const parsed: ClubConfig = JSON.parse(data);
+        let updated = false;
         if (parsed.clubName && (parsed.clubName.includes('VÕ THUẬT') || parsed.clubName.includes('THỂ THAO'))) {
           parsed.clubName = 'CLB NGÔI SAO GIA ĐỊNH';
+          updated = true;
+        }
+        if (!parsed.category || parsed.category !== INITIAL_CONFIG.category) {
+          parsed.category = INITIAL_CONFIG.category;
+          updated = true;
+        }
+        if (!parsed.address || parsed.address.includes('Phan Đăng Lưu')) {
+          parsed.address = INITIAL_CONFIG.address;
+          updated = true;
+        }
+        if (!parsed.email || parsed.email !== INITIAL_CONFIG.email) {
+          parsed.email = INITIAL_CONFIG.email;
+          updated = true;
+        }
+        if (!parsed.hotline || parsed.hotline.includes('1900') || parsed.hotline.includes('0907')) {
+          parsed.hotline = INITIAL_CONFIG.hotline;
+          updated = true;
+        }
+        if (updated) {
           localStorage.setItem(KEYS.CONFIG, JSON.stringify(parsed));
         }
         return parsed;
@@ -59,7 +79,43 @@ export const StorageService = {
   getBranches(): Branch[] {
     try {
       const data = localStorage.getItem(KEYS.BRANCHES);
-      return data ? JSON.parse(data) : INITIAL_BRANCHES;
+      if (data) {
+        const branches: Branch[] = JSON.parse(data);
+        let updated = false;
+        const migrated = branches.map((b) => {
+          if (b.id === 'cn1') {
+            if (b.address.includes('Phan Đăng Lưu') || b.phone.includes('0907')) {
+              updated = true;
+              return {
+                ...b,
+                shortName: 'Cơ Sở 1 (Phan Chu Trinh)',
+                address: '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam',
+                phone: '096 677 90 99',
+                bankAccount: '0966779099',
+              };
+            }
+          }
+          if (b.id === 'cn2') {
+            if (b.address.includes('Nguyễn Văn Đậu') || b.phone.includes('0907')) {
+              updated = true;
+              return {
+                ...b,
+                shortName: 'Cơ Sở 2 (Nơ Trang Long)',
+                address: '25A Nơ Trang Long, Phường Gia Định, TPHCM',
+                phone: '096 677 90 99',
+              };
+            }
+          }
+          return b;
+        });
+
+        if (updated) {
+          localStorage.setItem(KEYS.BRANCHES, JSON.stringify(migrated));
+          return migrated;
+        }
+        return branches;
+      }
+      return INITIAL_BRANCHES;
     } catch {
       return INITIAL_BRANCHES;
     }
@@ -270,6 +326,17 @@ export const StorageService = {
     this.saveReceipts(INITIAL_RECEIPTS);
     this.saveAttendance(INITIAL_ATTENDANCE);
     this.saveUsers(INITIAL_USERS);
+  },
+
+  /**
+   * Clear all operational data (Students, Receipts, Attendance)
+   * while keeping configurations (Club config, Branches, Disciplines, Packages, Users) intact.
+   * Perfect for handing over a fresh system to a real client.
+   */
+  clearOperationalData(): void {
+    this.saveStudents([]);
+    this.saveReceipts([]);
+    this.saveAttendance([]);
   },
 
   exportBackup(): string {

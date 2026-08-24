@@ -95,11 +95,11 @@ export const TuitionManagement: React.FC<TuitionManagementProps> = ({
 
     const rows = filteredReceipts.map((r) => [
       r.receiptCode,
-      r.branchId === 'cn1' ? 'Chi Nhánh 1 (Phan Đăng Lưu)' : 'Chi Nhánh 2 (Nguyễn Văn Đậu)',
+      branches.find((b) => b.id === r.branchId)?.name || (r.branchId === 'cn1' ? 'Chi Nhánh 1 (Phan Chu Trinh)' : 'Chi Nhánh 2 (Nơ Trang Long)'),
       r.studentCode,
       r.studentName,
       r.packageName,
-      r.paymentMethod === 'transfer' ? 'Chuyển khoản VietQR' : r.paymentMethod === 'cash' ? 'Tiền mặt' : 'POS',
+      r.paymentMethod === 'transfer' ? 'Chuyển khoản VietQR' : 'Tiền mặt',
       r.originalAmount,
       r.discount,
       r.finalAmount,
@@ -204,7 +204,6 @@ export const TuitionManagement: React.FC<TuitionManagementProps> = ({
             <option value="all">💳 Tất cả Hình Thức Thanh Toán</option>
             <option value="transfer">📱 Chuyển khoản VietQR</option>
             <option value="cash">💵 Tiền mặt tại quầy</option>
-            <option value="pos">💳 Quẹt thẻ máy POS</option>
           </select>
         </div>
       </div>
@@ -275,15 +274,20 @@ export const TuitionManagement: React.FC<TuitionManagementProps> = ({
                           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium ${
                             receipt.paymentMethod === 'transfer'
                               ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                              : receipt.paymentMethod === 'cash'
-                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                              : 'bg-blue-50 text-blue-800 border border-blue-200'
+                              : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                           }`}
                         >
-                          {receipt.paymentMethod === 'transfer' && <QrCode className="w-3 h-3 text-amber-600" />}
-                          {receipt.paymentMethod === 'cash' && <Banknote className="w-3 h-3 text-emerald-600" />}
-                          {receipt.paymentMethod === 'pos' && <CreditCard className="w-3 h-3 text-blue-600" />}
-                          {receipt.paymentMethod === 'transfer' ? 'VietQR' : receipt.paymentMethod === 'cash' ? 'Tiền mặt' : 'POS'}
+                          {receipt.paymentMethod === 'transfer' ? (
+                            <>
+                              <QrCode className="w-3 h-3 text-amber-600" />
+                              <span>VietQR</span>
+                            </>
+                          ) : (
+                            <>
+                              <Banknote className="w-3 h-3 text-emerald-600" />
+                              <span>Tiền mặt</span>
+                            </>
+                          )}
                         </span>
                       </td>
 

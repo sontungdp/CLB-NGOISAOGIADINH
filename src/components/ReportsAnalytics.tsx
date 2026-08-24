@@ -84,14 +84,10 @@ export const ReportsAnalytics: React.FC<ReportsAnalyticsProps> = ({
   const cashTotal = filteredReceipts
     .filter((r) => r.paymentMethod === 'cash')
     .reduce((sum, r) => sum + r.finalAmount, 0);
-  const posTotal = filteredReceipts
-    .filter((r) => r.paymentMethod === 'pos')
-    .reduce((sum, r) => sum + r.finalAmount, 0);
 
   const paymentMethodData = [
     { name: 'Chuyển Khoản (VietQR)', value: transferTotal },
     { name: 'Tiền Mặt Tại Quầy', value: cashTotal },
-    { name: 'Quẹt Thẻ POS', value: posTotal },
   ].filter((item) => item.value > 0);
 
   // Discipline Revenue Breakdown
@@ -210,7 +206,7 @@ export const ReportsAnalytics: React.FC<ReportsAnalyticsProps> = ({
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
           <div>
             <h3 className="font-bold text-slate-900 text-base">Cơ Cấu Hình Thức Thanh Toán</h3>
-            <p className="text-xs text-slate-500">Tỷ lệ chuyển khoản VietQR vs Tiền mặt vs POS</p>
+            <p className="text-xs text-slate-500">Tỷ lệ chuyển khoản VietQR vs Tiền mặt tại quầy</p>
           </div>
 
           <div className="h-60 w-full">
@@ -302,8 +298,8 @@ export const ReportsAnalytics: React.FC<ReportsAnalyticsProps> = ({
             <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
               <tr>
                 <th className="py-3 px-4">Chỉ Số So Sánh</th>
-                <th className="py-3 px-4">Cơ Sở 1 (Phan Đăng Lưu)</th>
-                <th className="py-3 px-4">Cơ Sở 2 (Nguyễn Văn Đậu)</th>
+                <th className="py-3 px-4">{branches.find(b => b.id === 'cn1')?.shortName || 'Cơ Sở 1 (Phan Chu Trinh)'}</th>
+                <th className="py-3 px-4">{branches.find(b => b.id === 'cn2')?.shortName || 'Cơ Sở 2 (Nơ Trang Long)'}</th>
                 <th className="py-3 px-4 font-bold text-red-700">Tổng Hệ Thống</th>
               </tr>
             </thead>

@@ -309,7 +309,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               3. Phương Thức Thanh Toán
             </label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setPaymentMethod('transfer')}
@@ -334,19 +334,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               >
                 <Banknote className="w-5 h-5 mb-1 text-emerald-600" />
                 Tiền Mặt Tại Quầy
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('pos')}
-                className={`flex flex-col items-center justify-center p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                  paymentMethod === 'pos'
-                    ? 'bg-blue-50 border-blue-500 text-blue-900 shadow-sm ring-1 ring-blue-500'
-                    : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                <CreditCard className="w-5 h-5 mb-1 text-blue-600" />
-                Quẹt Thẻ POS
               </button>
             </div>
           </div>

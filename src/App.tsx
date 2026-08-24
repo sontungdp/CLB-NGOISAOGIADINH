@@ -295,6 +295,11 @@ export default function App() {
     loadAllData();
   };
 
+  const handleClearOperationalData = () => {
+    StorageService.clearOperationalData();
+    loadAllData();
+  };
+
   const handleLoginSuccess = (user: UserAccount) => {
     setCurrentUser(user);
     StorageService.setCurrentUser(user);
@@ -453,6 +458,7 @@ export default function App() {
             onSaveDisciplines={handleSaveDisciplines}
             onSaveUsers={handleSaveUsers}
             onResetData={handleResetData}
+            onClearOperationalData={handleClearOperationalData}
             onReloadAllData={loadAllData}
           />
         )}
@@ -465,9 +471,17 @@ export default function App() {
           ? 'bg-white border-slate-200 text-slate-500'
           : 'bg-slate-950 border-slate-800 text-slate-400'
       }`}>
-        <p>
-          © 2026 <strong className={theme === 'light' ? 'text-slate-800' : 'text-slate-200'}>CLB Ngôi Sao Gia Định</strong> • Phần Mềm Quản Lý Học Phí 2 Chi Nhánh • Thiết kế chuyên nghiệp, tiện dụng
-        </p>
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p>
+            © 2026 <strong className={theme === 'light' ? 'text-slate-800' : 'text-slate-200'}>CLB Ngôi Sao Gia Định</strong> • {config.category || 'Trang · Câu lạc bộ thể thao'}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px]">
+            <span><strong>CN1:</strong> 2A Phan Chu Trinh, P.12, Bình Thạnh</span>
+            <span><strong>CN2:</strong> 25A Nơ Trang Long, P.Gia Định</span>
+            <span><strong>Hotline:</strong> {config.hotline || '096 677 90 99'}</span>
+            <span><strong>Email:</strong> {config.email || 'ngoisaogiadinhvn@gmail.com'}</span>
+          </div>
+        </div>
       </footer>
 
       {/* ALL MODALS */}

@@ -64,13 +64,13 @@ export const ReceiptPrintModal: React.FC<ReceiptPrintModalProps> = ({
                   CLB NGÔI SAO GIA ĐỊNH
                 </h1>
                 <p className="text-xs font-bold text-amber-700">
-                  {branch?.name || (receipt.branchId === 'cn1' ? 'Chi Nhánh 1 (Phan Đăng Lưu)' : 'Chi Nhánh 2 (Nguyễn Văn Đậu)')}
+                  {branch?.name || (receipt.branchId === 'cn1' ? 'CLB Ngôi Sao Gia Định - Chi Nhánh 1' : 'CLB Ngôi Sao Gia Định - Chi Nhánh 2')}
                 </p>
                 <p className="text-[11px] text-slate-600">
-                  Địa chỉ: {branch?.address || (receipt.branchId === 'cn1' ? '2A Phan Đăng Lưu, P.14, Q.Bình Thạnh, TP.HCM' : '45 Nguyễn Văn Đậu, P.6, Q.Bình Thạnh, TP.HCM')}
+                  Địa chỉ: {branch?.address || (receipt.branchId === 'cn1' ? '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam' : '25A Nơ Trang Long, Phường Gia Định, TPHCM')}
                 </p>
                 <p className="text-[11px] text-slate-600">
-                  Hotline: {branch?.phone || '0907 888 111'} | HLV Trưởng: {branch?.manager || 'Nguyễn Hoàng Long'}
+                  Hotline: {branch?.phone || '096 677 90 99'} | Email: ngoisaogiadinhvn@gmail.com
                 </p>
               </div>
             </div>
@@ -171,9 +171,7 @@ export const ReceiptPrintModal: React.FC<ReceiptPrintModalProps> = ({
             <div className="text-xs text-slate-600">
               <span>Hình thức thanh toán: </span>
               <span className="font-bold uppercase text-slate-900">
-                {receipt.paymentMethod === 'cash' && 'Tiền mặt tại quầy'}
-                {receipt.paymentMethod === 'transfer' && 'Chuyển khoản Ngân hàng (VietQR)'}
-                {receipt.paymentMethod === 'pos' && 'Quẹt thẻ máy POS'}
+                {receipt.paymentMethod === 'cash' ? 'Tiền mặt tại quầy' : 'Chuyển khoản Ngân hàng (VietQR)'}
               </span>
             </div>
             <div className="text-right">

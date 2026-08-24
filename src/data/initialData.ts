@@ -4,21 +4,21 @@ export const INITIAL_BRANCHES: Branch[] = [
   {
     id: 'cn1',
     name: 'CLB Ngôi Sao Gia Định - Chi Nhánh 1',
-    shortName: 'Cơ Sở 1 (Phan Đăng Lưu)',
-    address: '2A Phan Đăng Lưu, Phường 14, Quận Bình Thạnh, TP. Hồ Chí Minh',
-    phone: '0907 888 111',
+    shortName: 'Cơ Sở 1 (Phan Chu Trinh)',
+    address: '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam',
+    phone: '096 677 90 99',
     manager: 'HLV Trưởng: Nguyễn Hoàng Long',
     bankName: 'MB Bank (Ngân hàng Quân Đội)',
-    bankAccount: '0907888111',
+    bankAccount: '0966779099',
     bankOwner: 'CLB NGOI SAO GIA DINH CN1',
     bankBin: '970422',
   },
   {
     id: 'cn2',
     name: 'CLB Ngôi Sao Gia Định - Chi Nhánh 2',
-    shortName: 'Cơ Sở 2 (Nguyễn Văn Đậu)',
-    address: '45 Nguyễn Văn Đậu, Phường 6, Quận Bình Thạnh, TP. Hồ Chí Minh',
-    phone: '0907 888 222',
+    shortName: 'Cơ Sở 2 (Nơ Trang Long)',
+    address: '25A Nơ Trang Long, Phường Gia Định, TPHCM',
+    phone: '096 677 90 99',
     manager: 'HLV Trưởng: Trần Minh Trí',
     bankName: 'Vietcombank',
     bankAccount: '0071001234567',
@@ -29,10 +29,13 @@ export const INITIAL_BRANCHES: Branch[] = [
 
 export const INITIAL_CONFIG: ClubConfig = {
   clubName: 'CLB NGÔI SAO GIA ĐỊNH',
+  category: 'Trang · Câu lạc bộ thể thao',
+  address: '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam',
+  hotline: '096 677 90 99',
+  email: 'ngoisaogiadinhvn@gmail.com',
   slogan: 'Rèn Luyện Ý Chí - Khỏe Mạnh Thể Chất - Tinh Thần Thượng Võ',
-  hotline: '1900 6868 - 0907 888 111',
   branches: INITIAL_BRANCHES,
-  defaultReminderTemplate: 'CLB Ngôi Sao Gia Định xin thông báo: Học phí tháng [KY_HAN] của học viên [HO_TEN] (Mã: [MA_HV] - [CHI_NHANH]) sẽ hết hạn vào ngày [NGAY_HET_HAN]. Kính mời quý học viên/phụ huynh đóng phí để duy trì khóa học. STK: [STK] - [NGAN_HANG] ([CHU_TK]). Cú pháp: [MA_HV] [HO_TEN]. Xin cảm ơn!',
+  defaultReminderTemplate: 'CLB Ngôi Sao Gia Định xin thông báo: Học phí tháng [KY_HAN] của học viên [HO_TEN] (Mã: [MA_HV] - [CHI_NHANH]) sẽ hết hạn vào ngày [NGAY_HET_HAN]. Kính mời quý học viên/phụ huynh đóng phí để duy trì khóa học. STK: [STK] - [NGAN_HANG] ([CHU_TK]). Cú pháp: [MA_HV] [HO_TEN]. Hotline: 096 677 90 99. Xin cảm ơn!',
 };
 
 export const INITIAL_DISCIPLINES: Discipline[] = [
@@ -638,11 +641,11 @@ export const INITIAL_RECEIPTS: PaymentReceipt[] = [
     originalAmount: 4080000,
     discount: 0,
     finalAmount: 4080000,
-    paymentMethod: 'pos',
+    paymentMethod: 'transfer',
     paymentDate: '2026-06-15 17:30:00',
     validFrom: '2026-06-15',
     validTo: '2026-12-15',
-    note: 'Quẹt thẻ POS máy Vietcombank',
+    note: 'Chuyển khoản VietQR',
     cashier: 'Trần Minh Trí',
   },
   {
