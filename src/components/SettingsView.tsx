@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FeePackage,
   Branch,
@@ -75,6 +75,26 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [editedBranches, setEditedBranches] = useState<Branch[]>(branches);
   const [editedPackages, setEditedPackages] = useState<FeePackage[]>(packages);
   const [userList, setUserList] = useState<UserAccount[]>(users);
+
+  // Sync state when props change
+  useEffect(() => {
+    setEditedBranches(branches);
+  }, [branches]);
+
+  useEffect(() => {
+    setEditedPackages(packages);
+  }, [packages]);
+
+  useEffect(() => {
+    setUserList(users);
+  }, [users]);
+
+  useEffect(() => {
+    setClubName(config.clubName || 'CLB NGÔI SAO GIA ĐỊNH');
+    setSlogan(config.slogan || 'Rèn Luyện Ý Chí - Khỏe Mạnh Thể Chất - Tinh Thần Thượng Võ');
+    setHotline(config.hotline || '1900 6868 - 0907 888 111');
+    setReminderTemplate(config.defaultReminderTemplate || '');
+  }, [config]);
 
   // User modal state
   const [showUserModal, setShowUserModal] = useState(false);
@@ -534,12 +554,27 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <span className="px-2.5 py-1 bg-red-100 text-red-800 font-bold text-xs rounded-lg border border-red-200">
                     {branch.id === 'cn1' ? 'CƠ SỞ 1' : 'CƠ SỞ 2'}
                   </span>
-                  <h4 className="font-bold text-slate-900 text-base">{branch.name}</h4>
+                  <h4 className="font-bold text-slate-900 text-base">{branch.name || branch.shortName}</h4>
                 </div>
 
                 <div className="space-y-3 text-xs">
                   <div>
-                    <label className="block font-bold text-slate-700 mb-1">Tên Hiển Thị Rút Gọn</label>
+                    <label className="block font-bold text-slate-700 mb-1">Tên Chi Nhánh (Đầy Đủ)</label>
+                    <input
+                      type="text"
+                      value={branch.name}
+                      onChange={(e) => {
+                        const next = [...editedBranches];
+                        next[idx].name = e.target.value;
+                        setEditedBranches(next);
+                      }}
+                      placeholder="Ví dụ: Cơ Sở 1 - Phan Đăng Lưu"
+                      className="w-full bg-white border border-slate-300 rounded-xl p-2 text-slate-900 font-semibold shadow-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Tên Hiển Thị Rút Gọn (Thanh Điều Hướng & Thẻ)</label>
                     <input
                       type="text"
                       value={branch.shortName}
@@ -548,6 +583,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         next[idx].shortName = e.target.value;
                         setEditedBranches(next);
                       }}
+                      placeholder="Ví dụ: CS1 (Phan Đăng Lưu)"
                       className="w-full bg-white border border-slate-300 rounded-xl p-2 text-slate-900 font-semibold shadow-xs"
                     />
                   </div>

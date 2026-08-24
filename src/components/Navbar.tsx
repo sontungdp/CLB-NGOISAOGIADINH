@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BranchFilter, Branch, TabType, UserAccount } from '../types';
+import { BranchFilter, Branch, TabType, UserAccount, ClubConfig } from '../types';
 import { ClubLogo } from './ClubLogo';
 import {
   LayoutDashboard,
@@ -26,6 +26,8 @@ interface NavbarProps {
   onChangeTab: (tab: TabType) => void;
   branchFilter: BranchFilter;
   onChangeBranchFilter: (filter: BranchFilter) => void;
+  branches?: Branch[];
+  config?: ClubConfig;
   alertCount?: number;
   onQuickAddStudent: () => void;
   onQuickPayment: () => void;
@@ -42,6 +44,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onChangeTab,
   branchFilter,
   onChangeBranchFilter,
+  branches,
+  config,
   alertCount = 0,
   onQuickAddStudent,
   onQuickPayment,
@@ -110,11 +114,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <span className={`font-black text-base tracking-tight uppercase font-sans ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                  CLB NGÔI SAO GIA ĐỊNH
+                  {config?.clubName || 'CLB NGÔI SAO GIA ĐỊNH'}
                 </span>
               </div>
               <p className={`text-[11px] font-medium hidden sm:block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Hệ thống Quản lý Học phí & Học viên 2 Chi Nhánh
+                {config?.slogan || 'Hệ thống Quản lý Học phí & Học viên 2 Chi Nhánh'}
               </p>
             </div>
           </div>
@@ -131,30 +135,50 @@ export const Navbar: React.FC<NavbarProps> = ({
                   : isLight ? 'text-slate-600 hover:text-slate-950' : 'text-slate-400 hover:text-white'
               }`}
             >
-              Tất Cả 2 Chi Nhánh
+              Tất Cả {branches && branches.length > 0 ? `${branches.length} ` : '2 '}Chi Nhánh
             </button>
-            <button
-              onClick={() => onChangeBranchFilter('cn1')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                branchFilter === 'cn1'
-                  ? 'bg-red-700 text-white shadow-sm'
-                  : isLight ? 'text-slate-600 hover:text-slate-950' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <MapPin className="w-3 h-3" />
-              Chi Nhánh 1 (Phan Đăng Lưu)
-            </button>
-            <button
-              onClick={() => onChangeBranchFilter('cn2')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                branchFilter === 'cn2'
-                  ? 'bg-red-700 text-white shadow-sm'
-                  : isLight ? 'text-slate-600 hover:text-slate-950' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <MapPin className="w-3 h-3" />
-              Chi Nhánh 2 (Nguyễn Văn Đậu)
-            </button>
+            {branches && branches.length > 0 ? (
+              branches.map((b) => (
+                <button
+                  key={b.id}
+                  onClick={() => onChangeBranchFilter(b.id as BranchFilter)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                    branchFilter === b.id
+                      ? 'bg-red-700 text-white shadow-sm'
+                      : isLight ? 'text-slate-600 hover:text-slate-950' : 'text-slate-400 hover:text-white'
+                  }`}
+                  title={b.address || b.name}
+                >
+                  <MapPin className="w-3 h-3" />
+                  {b.shortName || b.name}
+                </button>
+              ))
+            ) : (
+              <>
+                <button
+                  onClick={() => onChangeBranchFilter('cn1')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                    branchFilter === 'cn1'
+                      ? 'bg-red-700 text-white shadow-sm'
+                      : isLight ? 'text-slate-600 hover:text-slate-950' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <MapPin className="w-3 h-3" />
+                  Cơ Sở 1 (Phan Đăng Lưu)
+                </button>
+                <button
+                  onClick={() => onChangeBranchFilter('cn2')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                    branchFilter === 'cn2'
+                      ? 'bg-red-700 text-white shadow-sm'
+                      : isLight ? 'text-slate-600 hover:text-slate-950' : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <MapPin className="w-3 h-3" />
+                  Cơ Sở 2 (Nguyễn Văn Đậu)
+                </button>
+              </>
+            )}
           </div>
 
           {/* Quick Action Buttons, Theme Switcher & User Profile */}
@@ -231,13 +255,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                         @{currentUser.username}
                       </div>
                       <div className="text-[10px] text-slate-400 flex items-center gap-1 pt-1">
-                        <MapPin className="w-3 h-3 text-red-500" />
-                        <span>
+                        <MapPin className="w-3 h-3 text-red-500 shrink-0" />
+                        <span className="truncate">
                           {currentUser.branchId === 'all'
-                            ? 'Toàn quyền 2 Chi Nhánh'
-                            : currentUser.branchId === 'cn1'
-                            ? 'Chi Nhánh 1 (Phan Đăng Lưu)'
-                            : 'Chi Nhánh 2 (Nguyễn Văn Đậu)'}
+                            ? `Toàn quyền ${branches?.length || 2} Chi Nhánh`
+                            : branches?.find((b) => b.id === currentUser.branchId)?.shortName ||
+                              branches?.find((b) => b.id === currentUser.branchId)?.name ||
+                              (currentUser.branchId === 'cn1' ? 'Cơ Sở 1' : 'Cơ Sở 2')}
                         </span>
                       </div>
                     </div>

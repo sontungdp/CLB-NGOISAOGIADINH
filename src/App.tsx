@@ -289,7 +289,36 @@ export default function App() {
     loadAllData();
   };
 
+  const handleLoginSuccess = (user: UserAccount) => {
+    setCurrentUser(user);
+    StorageService.setCurrentUser(user);
+    if (user.branchId && user.branchId !== 'all') {
+      setBranchFilter(user.branchId as BranchFilter);
+    }
+  };
+
+  const handleLogout = () => {
+    StorageService.logoutUser();
+    setCurrentUser(null);
+  };
+
+  const handleSwitchUser = () => {
+    StorageService.logoutUser();
+    setCurrentUser(null);
+  };
+
   const overdueCount = students.filter(s => s.feeStatus === 'unpaid' || s.feeStatus === 'expiring_soon').length;
+
+  // If user is not logged in, show Login Screen immediately
+  if (!currentUser) {
+    return (
+      <LoginScreen
+        users={users}
+        onLogin={handleLoginSuccess}
+        theme={theme}
+      />
+    );
+  }
 
   return (
     <div className={`min-h-screen flex flex-col font-sans transition-colors ${
@@ -304,11 +333,17 @@ export default function App() {
         onChangeTab={setActiveTab}
         branchFilter={branchFilter}
         onChangeBranchFilter={setBranchFilter}
+        branches={branches}
+        config={config}
         alertCount={overdueCount}
         onQuickAddStudent={handleOpenAddStudent}
         onQuickPayment={() => handleOpenPayment()}
         theme={theme}
         onToggleTheme={toggleTheme}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        onSwitchUser={handleSwitchUser}
+        onOpenChangePassword={() => setChangePasswordModalOpen(true)}
       />
 
       {/* Main Container */}
@@ -494,6 +529,19 @@ export default function App() {
           branch={branches.find((b) => b.id === selectedStudentForReminder.branchId) || branches[0]}
           feePackage={packages.find((p) => p.id === selectedStudentForReminder.packageId)}
           onClose={() => setReminderModalOpen(false)}
+        />
+      )}
+
+      {/* 6. Change Password Modal */}
+      {changePasswordModalOpen && currentUser && (
+        <ChangePasswordModal
+          user={currentUser}
+          onClose={() => setChangePasswordModalOpen(false)}
+          onSave={(updatedUser) => {
+            handleSaveUsers(users.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+            setCurrentUser(updatedUser);
+            StorageService.setCurrentUser(updatedUser);
+          }}
         />
       )}
 
