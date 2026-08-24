@@ -1,9 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Student, FeePackage, Branch, PaymentReceipt, PaymentMethod, UserAccount } from '../types';
-import { formatVND, formatDate, getTodayDateString, generateReceiptCode, generateVietQrUrl } from '../utils/formatters';
+import { formatVND, formatDate, getTodayDateString, generateReceiptCode, generateVietQrUrl, removeVietnameseTones, getStudentStatusBadge } from '../utils/formatters';
 import { ClubLogo } from './ClubLogo';
 import confetti from 'canvas-confetti';
-import { X, CreditCard, Banknote, QrCode, Sparkles, Check, ArrowRight, UserCheck, ShieldCheck } from 'lucide-react';
+import {
+  X,
+  CreditCard,
+  Banknote,
+  QrCode,
+  Sparkles,
+  Check,
+  ArrowRight,
+  UserCheck,
+  ShieldCheck,
+  Search,
+  ChevronDown,
+  Building2,
+  Calendar,
+  AlertCircle,
+  User,
+} from 'lucide-react';
 
 interface PaymentModalProps {
   students: Student[];
@@ -28,6 +44,49 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 }) => {
   const [studentId, setStudentId] = useState<string>(selectedStudentId || (students[0]?.id ?? ''));
   const currentStudent = students.find((s) => s.id === studentId) || students[0];
+
+  // Search state for student selection
+  const [studentSearchTerm, setStudentSearchTerm] = useState<string>('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [studentBranchFilter, setStudentBranchFilter] = useState<'all' | 'cn1' | 'cn2'>('all');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Filter students based on search term and branch
+  const filteredStudents = useMemo(() => {
+    const term = studentSearchTerm.trim().toLowerCase();
+    const normalizedTerm = removeVietnameseTones(term);
+
+    return students.filter((s) => {
+      if (studentBranchFilter !== 'all' && s.branchId !== studentBranchFilter) {
+        return false;
+      }
+
+      if (!term) return true;
+
+      const nameLower = s.fullName.toLowerCase();
+      const nameNormalized = removeVietnameseTones(nameLower);
+      const codeLower = s.code.toLowerCase();
+      const phoneClean = s.phone.replace(/\s+/g, '');
+
+      return (
+        nameLower.includes(term) ||
+        nameNormalized.includes(normalizedTerm) ||
+        codeLower.includes(term) ||
+        phoneClean.includes(term)
+      );
+    });
+  }, [students, studentSearchTerm, studentBranchFilter]);
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const currentBranchId = currentStudent ? currentStudent.branchId : defaultBranchId;
   const currentBranch = branches.find((b) => b.id === currentBranchId) || branches[0];
@@ -144,7 +203,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
     const updatedStudent: Student = {
       ...currentStudent,
       packageId: selectedPackage.id,
-      feeStatus: 'paid',
+      feeStatus: selectedPackage.type === 'free' || selectedPackage.price === 0 ? 'free' : 'paid',
       feePaidDate: paymentDate,
       feeDueDate: newDueDate,
       remainingSessions: newRemaining,
@@ -162,6 +221,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
     onSuccess(receipt, updatedStudent);
   };
+
+  const statusBadge = currentStudent
+    ? getStudentStatusBadge(currentStudent.feeStatus, currentStudent.feeDueDate, currentStudent.remainingSessions)
+    : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
@@ -189,32 +252,226 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           
-          {/* 1. Chọn học viên */}
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              1. Chọn Học Viên Đóng Phí
-            </label>
-            <select
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              className="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm text-slate-900 font-semibold focus:ring-2 focus:ring-red-700 focus:border-red-700 shadow-xs"
-            >
-              {students.map((s) => (
-                <option key={s.id} value={s.id}>
-                  [{s.code}] {s.fullName} - {s.branchId === 'cn1' ? 'CN1' : 'CN2'} ({s.phone}) - Hạn cũ: {formatDate(s.feeDueDate)}
-                </option>
-              ))}
-            </select>
+          {/* 1. Chọn học viên với tính năng gõ tìm kiếm nhanh */}
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3" ref={dropdownRef}>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                1. Chọn Học Viên Đóng Phí (Gõ tên / mã / SĐT để tìm nhanh)
+              </label>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setStudentBranchFilter('all')}
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                    studentBranchFilter === 'all'
+                      ? 'bg-slate-800 text-white'
+                      : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
+                  }`}
+                >
+                  Tất cả
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStudentBranchFilter('cn1')}
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                    studentBranchFilter === 'cn1'
+                      ? 'bg-amber-600 text-white'
+                      : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
+                  }`}
+                >
+                  CS1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStudentBranchFilter('cn2')}
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                    studentBranchFilter === 'cn2'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-slate-600 hover:bg-slate-200 border border-slate-200'
+                  }`}
+                >
+                  CS2
+                </button>
+              </div>
+            </div>
 
+            {/* Search Input & Combobox */}
+            <div className="relative">
+              <div className="relative flex items-center">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+                <input
+                  type="text"
+                  value={studentSearchTerm}
+                  onChange={(e) => {
+                    setStudentSearchTerm(e.target.value);
+                    setIsDropdownOpen(true);
+                  }}
+                  onFocus={() => setIsDropdownOpen(true)}
+                  placeholder="🔎 Gõ tên học viên (VD: Sơn, Tùng, Long, Hùng), mã HV hoặc SĐT..."
+                  className="w-full bg-white border border-slate-300 rounded-xl pl-10 pr-20 py-2.5 text-sm text-slate-900 font-semibold focus:ring-2 focus:ring-red-700 focus:border-red-700 shadow-xs"
+                />
+                <div className="absolute right-2 flex items-center gap-1">
+                  {studentSearchTerm && (
+                    <button
+                      type="button"
+                      onClick={() => setStudentSearchTerm('')}
+                      className="p-1 text-slate-400 hover:text-slate-600 rounded-md cursor-pointer"
+                      title="Xóa tìm kiếm"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="p-1 text-slate-500 hover:text-slate-800 rounded-md cursor-pointer"
+                    title="Mở danh sách"
+                  >
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Autocomplete Dropdown List */}
+              {isDropdownOpen && (
+                <div className="absolute z-20 top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl max-h-64 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="p-2 bg-slate-50 text-[11px] font-bold text-slate-500 flex items-center justify-between sticky top-0 border-b border-slate-100 z-10">
+                    <span>Tìm thấy {filteredStudents.length} học viên</span>
+                    <span className="text-slate-400">Bấm để chọn</span>
+                  </div>
+
+                  {filteredStudents.length === 0 ? (
+                    <div className="p-4 text-center text-xs text-slate-500">
+                      Không tìm thấy học viên nào khớp với từ khóa "{studentSearchTerm}".
+                    </div>
+                  ) : (
+                    filteredStudents.map((s) => {
+                      const isSelected = s.id === studentId;
+                      return (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => {
+                            setStudentId(s.id);
+                            setIsDropdownOpen(false);
+                            setStudentSearchTerm('');
+                          }}
+                          className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between gap-3 hover:bg-red-50/70 transition-colors cursor-pointer ${
+                            isSelected ? 'bg-red-50/90 font-bold border-l-4 border-red-700' : ''
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white shrink-0 ${
+                                s.avatarColor || 'bg-red-600'
+                              }`}
+                            >
+                              {s.fullName.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div className="truncate">
+                              <p className="text-xs font-bold text-slate-900 truncate">
+                                {s.fullName}
+                              </p>
+                              <div className="flex items-center gap-2 text-[11px] text-slate-500">
+                                <span className="font-mono font-semibold text-slate-700">{s.code}</span>
+                                <span>•</span>
+                                <span>{s.phone}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                s.branchId === 'cn1' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
+                              }`}
+                            >
+                              {s.branchId === 'cn1' ? 'CS1' : 'CS2'}
+                            </span>
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                s.feeStatus === 'paid'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : s.feeStatus === 'expiring_soon'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-rose-100 text-rose-800'
+                              }`}
+                            >
+                              {s.remainingSessions !== undefined
+                                ? `${s.remainingSessions} buổi`
+                                : formatDate(s.feeDueDate)}
+                            </span>
+                            {isSelected && <Check className="w-4 h-4 text-red-700 shrink-0" />}
+                          </div>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Currently Selected Student Card */}
             {currentStudent && (
-              <div className="flex items-center justify-between text-xs text-slate-600 pt-1 px-1">
-                <span className="flex items-center gap-1.5 text-slate-700">
-                  <UserCheck className="w-4 h-4 text-emerald-600" />
-                  Học viên: <strong className="text-slate-900">{currentStudent.fullName}</strong>
-                </span>
-                <span>
-                  Trạng thái hiện tại: <strong className="text-amber-700 uppercase">{currentStudent.feeStatus}</strong>
-                </span>
+              <div className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-2xs">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-black text-white shrink-0 ${
+                      currentStudent.avatarColor || 'bg-red-600'
+                    }`}
+                  >
+                    {currentStudent.fullName.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <strong className="text-sm font-bold text-slate-900">{currentStudent.fullName}</strong>
+                      <span className="text-xs font-mono font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                        {currentStudent.code}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      SĐT: <span className="font-semibold text-slate-700">{currentStudent.phone}</span> • Cơ sở:{' '}
+                      <span className="font-semibold text-slate-700">
+                        {currentStudent.branchId === 'cn1' ? 'Cơ Sở 1 (Phan Chu Trinh)' : 'Cơ Sở 2 (Nơ Trang Long)'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 sm:self-center">
+                  <div className="text-right text-xs">
+                    <p className="text-[11px] text-slate-500">
+                      {currentStudent.remainingSessions !== undefined
+                        ? `Còn lại: ${currentStudent.remainingSessions} buổi`
+                        : `Hạn cũ: ${formatDate(currentStudent.feeDueDate)}`}
+                    </p>
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                        currentStudent.feeStatus === 'paid'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : currentStudent.feeStatus === 'expiring_soon'
+                          ? 'bg-amber-100 text-amber-800'
+                          : 'bg-rose-100 text-rose-800'
+                      }`}
+                    >
+                      {currentStudent.feeStatus === 'paid'
+                        ? 'Đã đóng phí'
+                        : currentStudent.feeStatus === 'expiring_soon'
+                        ? 'Sắp hết hạn'
+                        : 'Quá hạn / Hết phí'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDropdownOpen(true);
+                      setStudentSearchTerm('');
+                    }}
+                    className="text-xs font-bold text-red-700 hover:text-red-800 underline ml-2 cursor-pointer"
+                  >
+                    Đổi
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -67,7 +67,7 @@ export const ReceiptPrintModal: React.FC<ReceiptPrintModalProps> = ({
                   {branch?.name || (receipt.branchId === 'cn1' ? 'CLB Ngôi Sao Gia Định - Chi Nhánh 1' : 'CLB Ngôi Sao Gia Định - Chi Nhánh 2')}
                 </p>
                 <p className="text-[11px] text-slate-600">
-                  Địa chỉ: {branch?.address || (receipt.branchId === 'cn1' ? '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam' : '25A Nơ Trang Long, Phường Gia Định, TPHCM')}
+                  Địa chỉ: {branch?.address || (receipt.branchId === 'cn1' ? '2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM' : '25A Nơ Trang Long, Phường Gia Định, TPHCM')}
                 </p>
                 <p className="text-[11px] text-slate-600">
                   Hotline: {branch?.phone || '096 677 90 99'} | Email: ngoisaogiadinhvn@gmail.com
@@ -208,7 +208,7 @@ export const ReceiptPrintModal: React.FC<ReceiptPrintModalProps> = ({
 
           {/* Footer Note */}
           <div className="mt-8 pt-4 border-t border-slate-200 text-center text-[11px] text-slate-400">
-            Cảm ơn quý học viên & phụ huynh đã đồng hành cùng CLB Võ Thuật & Thể Thao Ngôi Sao Gia Định!
+            Cảm ơn quý học viên & phụ huynh đã đồng hành cùng CLB Ngôi Sao Gia Định!
           </div>
         </div>
 

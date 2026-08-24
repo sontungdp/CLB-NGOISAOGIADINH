@@ -117,16 +117,16 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin, theme 
               <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-2.5">
                 <Building2 className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
                 <div className="text-xs">
-                  <div className="font-bold text-white">Chi Nhánh 1 (Phan Đăng Lưu)</div>
-                  <div className="text-[11px] text-slate-400">2A Phan Đăng Lưu, P.14, Bình Thạnh</div>
+                  <div className="font-bold text-white">Cơ Sở 1 (Phan Chu Trinh)</div>
+                  <div className="text-[11px] text-slate-400">2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM</div>
                 </div>
               </div>
 
               <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-2.5">
                 <Building2 className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
                 <div className="text-xs">
-                  <div className="font-bold text-white">Chi Nhánh 2 (Nguyễn Văn Đậu)</div>
-                  <div className="text-[11px] text-slate-400">45 Nguyễn Văn Đậu, P.6, Bình Thạnh</div>
+                  <div className="font-bold text-white">Cơ Sở 2 (Nơ Trang Long)</div>
+                  <div className="text-[11px] text-slate-400">25A Nơ Trang Long, Phường Gia Định, TPHCM</div>
                 </div>
               </div>
             </div>

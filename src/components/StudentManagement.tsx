@@ -95,6 +95,8 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({
           if (student.feeStatus !== 'paid') return false;
         } else if (statusFilter === 'reserved') {
           if (student.feeStatus !== 'reserved') return false;
+        } else if (statusFilter === 'free') {
+          if (student.feeStatus !== 'free') return false;
         }
       }
 
@@ -130,7 +132,7 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({
     ];
 
     const rows = filteredStudents.map((s) => {
-      const branchName = s.branchId === 'cn1' ? 'Chi Nhánh 1 (Phan Đăng Lưu)' : 'Chi Nhánh 2 (Nguyễn Văn Đậu)';
+      const branchName = s.branchId === 'cn1' ? 'Cơ Sở 1 (Phan Chu Trinh)' : 'Cơ Sở 2 (Nơ Trang Long)';
       const disc = disciplines.find((d) => d.id === s.disciplineId)?.name || s.disciplineId;
       const pkg = packages.find((p) => p.id === s.packageId)?.name || '---';
 
@@ -212,8 +214,8 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-red-600 focus:bg-white outline-none cursor-pointer"
             >
               <option value="all">🏢 Tất cả 2 Chi Nhánh</option>
-              <option value="cn1">📍 Chi Nhánh 1 (Phan Đăng Lưu)</option>
-              <option value="cn2">📍 Chi Nhánh 2 (Nguyễn Văn Đậu)</option>
+              <option value="cn1">📍 Cơ Sở 1 (Phan Chu Trinh)</option>
+              <option value="cn2">📍 Cơ Sở 2 (Nơ Trang Long)</option>
             </select>
           </div>
 
@@ -242,6 +244,7 @@ export const StudentManagement: React.FC<StudentManagementProps> = ({
             >
               <option value="all">🏷️ Tất cả Trạng Thái</option>
               <option value="paid">✅ Đã đóng học phí</option>
+              <option value="free">✨ Lớp Năng Khiếu (Miễn phí)</option>
               <option value="expiring_soon">⏳ Sắp hết hạn (&le; 7 ngày)</option>
               <option value="overdue">🚨 Quá hạn đóng phí</option>
               <option value="reserved">⏸️ Đang bảo lưu</option>

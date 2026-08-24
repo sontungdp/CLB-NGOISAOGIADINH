@@ -127,7 +127,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
                 {isEdit ? 'Chỉnh Sửa Thông Tin Học Viên' : 'Tiếp Nhận & Đăng Ký Học Viên Mới'}
               </h3>
               <p className="text-xs text-amber-200 font-medium">
-                CLB Võ Thuật & Thể Thao Ngôi Sao Gia Định
+                CLB Ngôi Sao Gia Định
               </p>
             </div>
           </div>
@@ -345,6 +345,7 @@ export const StudentModal: React.FC<StudentModalProps> = ({
                 className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-sm text-slate-900 font-bold focus:ring-2 focus:ring-red-700 shadow-xs"
               >
                 <option value="paid">Đã đóng phí</option>
+                <option value="free">✨ Lớp Năng Khiếu (Miễn phí 100%)</option>
                 <option value="expiring_soon">Sắp hết hạn (&lt; 7 ngày)</option>
                 <option value="overdue">Quá hạn đóng phí</option>
                 <option value="unpaid">Chưa đóng</option>

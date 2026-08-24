@@ -23,7 +23,7 @@ export interface Discipline {
   color: string;
 }
 
-export type PackageType = 'monthly' | 'quarterly' | 'biannual' | 'yearly' | 'sessions' | 'pt';
+export type PackageType = 'monthly' | 'quarterly' | 'biannual' | 'yearly' | 'sessions' | 'pt' | 'free';
 
 export interface FeePackage {
   id: string;
@@ -37,7 +37,7 @@ export interface FeePackage {
   description?: string;
 }
 
-export type StudentFeeStatus = 'paid' | 'expiring_soon' | 'overdue' | 'unpaid' | 'reserved';
+export type StudentFeeStatus = 'paid' | 'expiring_soon' | 'overdue' | 'unpaid' | 'reserved' | 'free';
 
 export interface Student {
   id: string;

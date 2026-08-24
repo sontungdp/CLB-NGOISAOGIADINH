@@ -195,8 +195,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {branchFilter === 'all'
                   ? 'Tổng Quan Quản Lý Học Phí & Học Viên 2 Chi Nhánh'
                   : branchFilter === 'cn1'
-                  ? 'Chi Nhánh 1 (2A Phan Đăng Lưu, Bình Thạnh)'
-                  : 'Chi Nhánh 2 (45 Nguyễn Văn Đậu, Bình Thạnh)'}
+                  ? 'Cơ Sở 1 (2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM)'
+                  : 'Cơ Sở 2 (25A Nơ Trang Long, Phường Gia Định, TPHCM)'}
               </h1>
               <p className="text-xs sm:text-sm text-slate-300">
                 Kiểm soát số liệu học phí, tự động tạo mã VietQR, cảnh báo học phí quá hạn và điểm danh thực tế.
@@ -223,7 +223,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
               }`}
             >
-              Cơ Sở 1 (Phan Đăng Lưu)
+              Cơ Sở 1 (Phan Chu Trinh)
             </button>
             <button
               onClick={() => onSelectBranchFilter('cn2')}
@@ -233,7 +233,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
               }`}
             >
-              Cơ Sở 2 (Nguyễn Văn Đậu)
+              Cơ Sở 2 (Nơ Trang Long)
             </button>
           </div>
         </div>
@@ -380,8 +380,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <span className="text-[11px] font-extrabold text-red-700 uppercase tracking-wider px-2 py-0.5 bg-red-50 rounded-md border border-red-200">
                   CƠ SỞ 1
                 </span>
-                <h3 className="font-bold text-slate-900 text-base mt-1">2A Phan Đăng Lưu, Bình Thạnh</h3>
-                <p className="text-xs text-slate-500 mt-0.5">HLV Trưởng: Nguyễn Hoàng Long (0907 888 111)</p>
+                <h3 className="font-bold text-slate-900 text-base mt-1">2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM</h3>
+                <p className="text-xs text-slate-500 mt-0.5">HLV Trưởng: Nguyễn Hoàng Long (096 677 90 99)</p>
               </div>
               <button
                 onClick={() => onSelectBranchFilter('cn1')}
@@ -410,8 +410,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <span className="text-[11px] font-extrabold text-red-700 uppercase tracking-wider px-2 py-0.5 bg-red-50 rounded-md border border-red-200">
                   CƠ SỞ 2
                 </span>
-                <h3 className="font-bold text-slate-900 text-base mt-1">45 Nguyễn Văn Đậu, Bình Thạnh</h3>
-                <p className="text-xs text-slate-500 mt-0.5">HLV Trưởng: Trần Minh Trí (0907 888 222)</p>
+                <h3 className="font-bold text-slate-900 text-base mt-1">25A Nơ Trang Long, Phường Gia Định, TPHCM</h3>
+                <p className="text-xs text-slate-500 mt-0.5">HLV Trưởng: Trần Minh Trí (096 677 90 99)</p>
               </div>
               <button
                 onClick={() => onSelectBranchFilter('cn2')}
@@ -782,8 +782,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     className="bg-white border border-slate-300 rounded-xl py-2 px-3 text-xs text-slate-800 font-bold focus:ring-2 focus:ring-amber-500 shadow-xs cursor-pointer"
                   >
                     <option value="all">🏢 Cả 2 Cơ Sở</option>
-                    <option value="cn1">📍 Cơ Sở 1 (Phan Đăng Lưu)</option>
-                    <option value="cn2">📍 Cơ Sở 2 (Nguyễn Văn Đậu)</option>
+                    <option value="cn1">📍 Cơ Sở 1 (Phan Chu Trinh)</option>
+                    <option value="cn2">📍 Cơ Sở 2 (Nơ Trang Long)</option>
                   </select>
 
                   {/* Additional filter depending on modal type */}
@@ -1388,7 +1388,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {/* Modal Footer */}
             <div className="px-6 py-3 bg-slate-100 border-t border-slate-200 flex items-center justify-between shrink-0 text-xs">
               <span className="text-slate-500">
-                CLB Võ Thuật Ngôi Sao Gia Định &bull; Hệ thống quản lý học phí & học viên
+                CLB Ngôi Sao Gia Định &bull; Hệ thống quản lý học phí & học viên
               </span>
               <button
                 type="button"

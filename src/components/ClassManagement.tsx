@@ -180,7 +180,15 @@ export const ClassManagement: React.FC<ClassManagementProps> = ({
                 </div>
 
                 <h3 className="font-bold text-slate-900 text-base mt-2">{cls.name}</h3>
-                <p className="text-xs text-amber-800 font-medium">{discipline?.name || 'Võ Thuật'}</p>
+                <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                  <p className="text-xs text-amber-800 font-medium">{discipline?.name || 'Võ Thuật'}</p>
+                  {cls.disciplineId === 'nangkheiu' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-800 border border-purple-300">
+                      <Award className="w-3 h-3 text-purple-600" />
+                      Không thu phí (0đ)
+                    </span>
+                  )}
+                </div>
 
                 <div className="mt-3 space-y-1.5 text-xs text-slate-500">
                   <div className="flex items-center justify-between">

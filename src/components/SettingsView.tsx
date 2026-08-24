@@ -894,7 +894,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         next[idx].name = e.target.value;
                         setEditedBranches(next);
                       }}
-                      placeholder="Ví dụ: Cơ Sở 1 - Phan Đăng Lưu"
+                      placeholder="Ví dụ: Cơ Sở 1 - Phan Chu Trinh"
                       className="w-full bg-white border border-slate-300 rounded-xl p-2 text-slate-900 font-semibold shadow-xs"
                     />
                   </div>
@@ -909,7 +909,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                         next[idx].shortName = e.target.value;
                         setEditedBranches(next);
                       }}
-                      placeholder="Ví dụ: CS1 (Phan Đăng Lưu)"
+                      placeholder="Ví dụ: CS1 (Phan Chu Trinh)"
                       className="w-full bg-white border border-slate-300 rounded-xl p-2 text-slate-900 font-semibold shadow-xs"
                     />
                   </div>
@@ -1362,8 +1362,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     u.branchId === 'all'
                       ? 'Tất cả 2 Chi Nhánh'
                       : u.branchId === 'cn1'
-                      ? 'Cơ Sở 1 (Phan Đăng Lưu)'
-                      : 'Cơ Sở 2 (Nguyễn Văn Đậu)';
+                      ? 'Cơ Sở 1 (Phan Chu Trinh)'
+                      : 'Cơ Sở 2 (Nơ Trang Long)';
 
                   return (
                     <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
@@ -1511,6 +1511,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <option value="yearly">Gói 1 Năm VIP</option>
                     <option value="sessions">Thẻ Buổi / Vé Lượt</option>
                     <option value="pt">Kèm Riêng 1-1 (PT)</option>
+                    <option value="free">✨ Lớp Năng Khiếu (Miễn Phí 100% / 0đ)</option>
                   </select>
                 </div>
 
@@ -1557,8 +1558,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-medium focus:ring-2 focus:ring-red-700 shadow-xs"
                   >
                     <option value="all">Tất cả 2 Chi Nhánh</option>
-                    <option value="cn1">Chỉ Chi Nhánh 1</option>
-                    <option value="cn2">Chỉ Chi Nhánh 2</option>
+                    <option value="cn1">Cơ Sở 1 (Phan Chu Trinh)</option>
+                    <option value="cn2">Cơ Sở 2 (Nơ Trang Long)</option>
                   </select>
                 </div>
               </div>
@@ -1728,8 +1729,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-medium focus:ring-2 focus:ring-red-700 shadow-xs"
                   >
                     <option value="all">Cả 2 Chi Nhánh</option>
-                    <option value="cn1">Chi Nhánh 1 (Phan Đăng Lưu)</option>
-                    <option value="cn2">Chi Nhánh 2 (Nguyễn Văn Đậu)</option>
+                    <option value="cn1">Chi Nhánh 1 (Phan Chu Trinh)</option>
+                    <option value="cn2">Chi Nhánh 2 (Nơ Trang Long)</option>
                   </select>
                 </div>
 

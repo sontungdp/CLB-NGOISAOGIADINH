@@ -49,8 +49,8 @@ export const StorageService = {
           parsed.category = INITIAL_CONFIG.category;
           updated = true;
         }
-        if (!parsed.address || parsed.address.includes('Phan Đăng Lưu')) {
-          parsed.address = INITIAL_CONFIG.address;
+        if (!parsed.address || parsed.address.includes('Phan Đăng Lưu') || parsed.address.includes('Phường 12')) {
+          parsed.address = '2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM';
           updated = true;
         }
         if (!parsed.email || parsed.email !== INITIAL_CONFIG.email) {
@@ -84,22 +84,24 @@ export const StorageService = {
         let updated = false;
         const migrated = branches.map((b) => {
           if (b.id === 'cn1') {
-            if (b.address.includes('Phan Đăng Lưu') || b.phone.includes('0907')) {
+            if (b.address.includes('Phan Đăng Lưu') || b.address.includes('Phường 12') || b.phone.includes('0907') || !b.address.includes('Phường Bình Thạnh')) {
               updated = true;
               return {
                 ...b,
+                name: 'CLB Ngôi Sao Gia Định - Chi Nhánh 1',
                 shortName: 'Cơ Sở 1 (Phan Chu Trinh)',
-                address: '2A Phan Chu Trinh, Phường 12, Bình Thạnh, Ho Chi Minh City, Vietnam',
+                address: '2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM',
                 phone: '096 677 90 99',
                 bankAccount: '0966779099',
               };
             }
           }
           if (b.id === 'cn2') {
-            if (b.address.includes('Nguyễn Văn Đậu') || b.phone.includes('0907')) {
+            if (b.address.includes('Nguyễn Văn Đậu') || b.phone.includes('0907') || !b.address.includes('25A Nơ Trang Long')) {
               updated = true;
               return {
                 ...b,
+                name: 'CLB Ngôi Sao Gia Định - Chi Nhánh 2',
                 shortName: 'Cơ Sở 2 (Nơ Trang Long)',
                 address: '25A Nơ Trang Long, Phường Gia Định, TPHCM',
                 phone: '096 677 90 99',
@@ -128,7 +130,18 @@ export const StorageService = {
   getDisciplines(): Discipline[] {
     try {
       const data = localStorage.getItem(KEYS.DISCIPLINES);
-      return data ? JSON.parse(data) : INITIAL_DISCIPLINES;
+      if (data) {
+        const list: Discipline[] = JSON.parse(data);
+        if (!list.some((d) => d.id === 'nangkheiu')) {
+          const talentDiscipline = INITIAL_DISCIPLINES.find((d) => d.id === 'nangkheiu');
+          if (talentDiscipline) {
+            list.push(talentDiscipline);
+            localStorage.setItem(KEYS.DISCIPLINES, JSON.stringify(list));
+          }
+        }
+        return list;
+      }
+      return INITIAL_DISCIPLINES;
     } catch {
       return INITIAL_DISCIPLINES;
     }
@@ -141,7 +154,18 @@ export const StorageService = {
   getPackages(): FeePackage[] {
     try {
       const data = localStorage.getItem(KEYS.PACKAGES);
-      return data ? JSON.parse(data) : INITIAL_PACKAGES;
+      if (data) {
+        const list: FeePackage[] = JSON.parse(data);
+        if (!list.some((p) => p.id === 'pkg-nangkheiu-free')) {
+          const freePkg = INITIAL_PACKAGES.find((p) => p.id === 'pkg-nangkheiu-free');
+          if (freePkg) {
+            list.unshift(freePkg);
+            localStorage.setItem(KEYS.PACKAGES, JSON.stringify(list));
+          }
+        }
+        return list;
+      }
+      return INITIAL_PACKAGES;
     } catch {
       return INITIAL_PACKAGES;
     }
@@ -154,7 +178,21 @@ export const StorageService = {
   getClasses(): ClassSession[] {
     try {
       const data = localStorage.getItem(KEYS.CLASSES);
-      return data ? JSON.parse(data) : INITIAL_CLASSES;
+      if (data) {
+        const list: ClassSession[] = JSON.parse(data);
+        let updated = false;
+        INITIAL_CLASSES.forEach((initCls) => {
+          if (!list.some((c) => c.id === initCls.id)) {
+            list.push(initCls);
+            updated = true;
+          }
+        });
+        if (updated) {
+          localStorage.setItem(KEYS.CLASSES, JSON.stringify(list));
+        }
+        return list;
+      }
+      return INITIAL_CLASSES;
     } catch {
       return INITIAL_CLASSES;
     }
@@ -237,7 +275,12 @@ export const StorageService = {
   getAttendance(): AttendanceRecord[] {
     try {
       const data = localStorage.getItem(KEYS.ATTENDANCE);
-      return data ? JSON.parse(data) : INITIAL_ATTENDANCE;
+      if (!data) return INITIAL_ATTENDANCE;
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length <= 4 && INITIAL_ATTENDANCE.length > 4) {
+        return INITIAL_ATTENDANCE;
+      }
+      return parsed;
     } catch {
       return INITIAL_ATTENDANCE;
     }

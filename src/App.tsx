@@ -476,8 +476,8 @@ export default function App() {
             © 2026 <strong className={theme === 'light' ? 'text-slate-800' : 'text-slate-200'}>CLB Ngôi Sao Gia Định</strong> • {config.category || 'Trang · Câu lạc bộ thể thao'}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px]">
-            <span><strong>CN1:</strong> 2A Phan Chu Trinh, P.12, Bình Thạnh</span>
-            <span><strong>CN2:</strong> 25A Nơ Trang Long, P.Gia Định</span>
+            <span><strong>CN1:</strong> 2A Phan Chu Trinh, Phường Bình Thạnh, TPHCM</span>
+            <span><strong>CN2:</strong> 25A Nơ Trang Long, Phường Gia Định, TPHCM</span>
             <span><strong>Hotline:</strong> {config.hotline || '096 677 90 99'}</span>
             <span><strong>Email:</strong> {config.email || 'ngoisaogiadinhvn@gmail.com'}</span>
           </div>

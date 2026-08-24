@@ -189,8 +189,8 @@ export const TuitionManagement: React.FC<TuitionManagementProps> = ({
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:ring-2 focus:ring-red-600 focus:bg-white outline-none cursor-pointer"
           >
             <option value="all">🏢 Tất cả 2 Chi Nhánh</option>
-            <option value="cn1">📍 Chi Nhánh 1 (Phan Đăng Lưu)</option>
-            <option value="cn2">📍 Chi Nhánh 2 (Nguyễn Văn Đậu)</option>
+            <option value="cn1">📍 Cơ Sở 1 (Phan Chu Trinh)</option>
+            <option value="cn2">📍 Cơ Sở 2 (Nơ Trang Long)</option>
           </select>
         </div>
 
