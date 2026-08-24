@@ -213,7 +213,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin, theme 
                 </div>
               </div>
 
-              {/* Remember checkbox & info */}
+              {/* Remember checkbox */}
               <div className="flex items-center justify-between pt-1 text-xs">
                 <label className="flex items-center gap-2 text-slate-600 dark:text-slate-300 cursor-pointer select-none">
                   <input
@@ -224,9 +224,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ users, onLogin, theme 
                   />
                   <span>Ghi nhớ đăng nhập</span>
                 </label>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Hỗ trợ 24/7: 1900 6868
-                </span>
               </div>
 
               {/* Submit Button */}
